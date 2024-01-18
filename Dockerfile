@@ -39,7 +39,7 @@ RUN pip install --upgrade setuptools
 
 RUN $PIP_INSTALL install git+https://github.com/guorbit/utilities.git@development
 
-RUN $PIP_INSTALL torch==2.0.0 torchvision==0.15.1 --index-url https://download.pytorch.org/whl/cu110
+RUN $PIP_INSTALL torch==2.0.0 torchvision==0.15.1 --index-url https://download.pytorch.org/whl/cu118
 
 RUN $PIP_INSTALL \
     cython\
@@ -70,7 +70,7 @@ RUN $PIP_INSTALL \
     addict \
     openmim
 
-RUN mim install mmcv-full==1.5 -f https://download.openmmlab.com/mmcv/dist/cu110/torch2.0.0/index.html --no-deps --no-cache-dir 
+RUN mim install mmcv-full==1.5 -f https://download.openmmlab.com/mmcv/dist/cu117/torch2.0.0/index.html --no-deps --no-cache-dir 
 RUN mim install mmengine --no-deps
 RUN pip install mmsegmentation==0.27.0
     

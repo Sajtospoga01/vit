@@ -166,7 +166,7 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 optimizer = dict(
-    type='AdamW', lr=0.001, weight_decay=0.0001, betas=(0.9, 0.999))
+    type='AdamW', lr=0.00001, weight_decay=0.0001, betas=(0.9, 0.999))
 optimizer_config = dict(
     type='DistOptimizerHook',
     update_interval=1,

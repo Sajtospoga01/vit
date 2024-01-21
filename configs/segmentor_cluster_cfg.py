@@ -357,7 +357,7 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=20000)
+runner = dict(type='IterBasedRunner', max_iters=40000)
 checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1,out_dir='/nfs/',file_client_args=dict(backend='disk'))
 evaluation = dict(
     interval=4000, metric='mIoU', pre_eval=True, save_best='mIoU')

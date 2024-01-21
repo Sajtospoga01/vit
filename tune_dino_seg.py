@@ -139,6 +139,7 @@ def main():
         if name in new_state_dict and param.size() == new_state_dict[name].size():
             # Load the state dict and freeze the layer
             new_state_dict[name].copy_(param)
+            param.requires_grad = False
             populated_layers.append(name)
         else:
             # Handle layers that do not match or additional processing if required

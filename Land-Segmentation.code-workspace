@@ -1,11 +1,11 @@
 {
 	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "E:/Land-Segmentation.wiki"
-		}
-	],
+        {
+            "path": "."
+        },
+        {
+            "path": "E:/land-segmentation.wiki"
+        }
+    ],
     "settings": {}
 }

@@ -145,7 +145,7 @@ data = dict(
         ]))
 log_config = dict(
     interval=50, hooks=[
-        dict(type='TextLoggerHook', by_epoch=False),
+        dict(type='TextLoggerHook', by_epoch=False, out_dir='/nfs/segmentor/logs'),
         dict(
             type='WandbLoggerHook',  # Enables logging to Weights & Biases
             init_kwargs=dict(
@@ -183,7 +183,7 @@ lr_config = dict(
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=40000)
-checkpoint_config = dict(by_epoch=False, interval=4000,out_dir='/nfs/segmentor')
+checkpoint_config = dict(by_epoch=False, interval=4000,out_dir='/nfs/segmentor/checkpoints')
 evaluation = dict(interval=40000, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True

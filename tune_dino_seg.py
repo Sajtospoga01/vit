@@ -48,7 +48,7 @@ def load_weigths_to_model(model):
     # load the weights from the checkpoint into the model
     new_state_dict = model.state_dict()
     print(new_state_dict.keys())
-    old_state_dict = torch.load("dinov2_checkpoint.pth")
+    old_state_dict = torch.load("/nfs/vit_pretrain/Land-Segmentation/dinov2_checkpoint.pth")
     print(old_state_dict.keys())
     for name, param in old_state_dict.items():
         if name in new_state_dict and param.size() == new_state_dict[name].size():

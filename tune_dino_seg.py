@@ -91,7 +91,7 @@ def main():
     model = build_segmentor(cfg_mmcv.model)
     model.backbone.forward = partial(
         Dino2ModelHandler.teacher.backbone.get_intermediate_layers,
-        n = cfg.model.backbone.out_indices,
+        n = cfg_mmcv.model.backbone.out_indices,
         reshape = True,
     )
     if hasattr(model.backbone, "patch_size"):

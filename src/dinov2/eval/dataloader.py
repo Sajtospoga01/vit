@@ -17,8 +17,8 @@ import io
 
 @DATASETS.register_module()
 class WHU_OHS(CustomDataset):
-    CLASSES = ('background', 'class1', 'class2', 'class3')
-    PALETTE = [[0, 0, 0], [128, 0, 0], [0, 128, 0], [0, 0, 128]]
+    CLASSES = ('background', 'paddy field', 'dry farm', 'woodland', 'shrubbery', 'Sparse woodland','Other forest land','High-covered grassland','Medium-covered grassland','Low-covered grassland', 'River canal', 'Lake', 'Reservoir pond', 'Beach land', 'Shoal', 'Urban built-up', 'Rural-settlement', 'Other construction land', 'Sand', 'Gobi', 'Saline-alkali soil', 'Marshland', 'Bare land', 'Bare rock', 'Ocean')
+    PALETTE = [[0, 0, 0],[190, 210, 255],[0, 255, 197],[38, 115, 0],[163, 255, 115],[76, 230, 0],[85, 255, 0],[115, 115, 0],[168, 168, 0],[255, 255, 0],[115, 178, 255],[0, 92, 230],[0, 38, 115],[122, 142, 245],[0, 168, 132],[115, 0, 0],[255, 127, 127],[255, 190, 190],[255, 190, 232],[255, 0, 197],[230, 0, 169],[168, 0, 132],[115, 0, 76],[255, 115, 223],[161, 161, 161]]
 
     def __init__(self, **kwargs):
         super(WHU_OHS, self).__init__(

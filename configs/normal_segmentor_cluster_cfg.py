@@ -207,4 +207,4 @@ model = dict(
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)
-work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'
+work_dir = './'

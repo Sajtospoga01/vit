@@ -177,7 +177,7 @@ def main():
     data_loaders = [
         build_dataloader(
             ds,
-            samples_per_gpu = 1,
+            samples_per_gpu = 32,
             workers_per_gpu = 1,
             seed = 42,
             drop_last = True,

@@ -7,7 +7,7 @@ import src.dinov2.eval.segmentation_m2f.models.segmentors
 from src.dinov2.models.dinov2_model import SSLMetaArch
 from src.utils.utils import load_cfg
 import wandb
-from keys import load_env
+
 from mmcv.runner import load_checkpoint,build_runner
 from mmcv.runner import TextLoggerHook
 from mmseg.apis import init_segmentor, inference_segmentor
@@ -66,8 +66,6 @@ def load_weigths_to_model(model):
     
 
 def main():
-
-    load_env()
     wandb.login()
     distributed.enable(overwrite=True)
     cfg = load_cfg()

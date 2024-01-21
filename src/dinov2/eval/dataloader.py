@@ -107,7 +107,7 @@ class LoadImageFromS3(LoadImageFromFile):
             to_rgb=False)
         return results
     
-    def __get_image_with_info(self, filename):
+    # def __get_image_with_info(self, filename):
 
 
 

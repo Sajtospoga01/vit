@@ -48,7 +48,7 @@ data = dict(
         ann_dir='annotations/train',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
-            dict(type='LoadAnnotations', reduce_zero_label=False),
+            dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
                 img_scale=(256, 64),

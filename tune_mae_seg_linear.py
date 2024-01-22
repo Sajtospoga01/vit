@@ -25,6 +25,11 @@ from src.dinov2.eval.segmentation import models
 from functools import partial
 import src.dinov2.eval.segmentation.hooks
 from src.vit_model.mae import MaskedAutoencoderViT
+import torch.nn as nn
+import itertools
+import torch.nn.functional as F
+import math
+NUM_CLASSES = 24
 HPARAMS = {
     'mini_batch_size': 32,
     'batch_size': 256,

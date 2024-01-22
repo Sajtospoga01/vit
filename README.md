@@ -13,8 +13,8 @@ Current backbones in use:
 
 Current segmentation decoder networks in use:
 - [x] MS linear head (DINOv2)
-- [] TBD (MAE - latent space optimized decoders)
-- [] TBD (DINOv2 - multi-scale optimized decoders)
+- [ ] TBD (MAE - latent space optimized decoders)
+- [ ] TBD (DINOv2 - multi-scale optimized decoders)
 
 ## Goal of the project
 The goal of the project is to implement a state of the art end-to-end training pipeline for hyper-spectral image data processing using existing state of the art methods.

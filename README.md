@@ -1,17 +1,29 @@
 # Land-Segmentation
 [![Gradient](https://assets.paperspace.io/img/gradient-badge.svg)](https://console.paperspace.com/t17q5l89hk/notebook/r2qjh2d2v9c9ft6?file=%2Fland_segmentation.ipynb)
 
->The project is under huge changes as of now. From the previous CNN based design to ViT based design, and from TF2 to PyTorch. The project is not yet ready for use.
+The project is meant to host the source code for the dissertation project on satellite remote sensing optimisation with different self-supervised pretraining methods.
 
-This repository contains the code for my paper on hyperspectral land segmentation in remote sensing.
-In this paper we propose a way of pretraining hyperspectral vision transformers.
+The current pretraining methods are:
+- [x] Masked-Autoencoder
+- [x] DINOv2
+
+Current backbones in use:
+- [x] ViT-S8 (DINOv2, MAE)
+- [ ] HSI optimized backbone
+
+Current segmentation decoder networks in use:
+- [x] MS linear head (DINOv2)
+- [] TBD (MAE - latent space optimized decoders)
+- [] TBD (DINOv2 - multi-scale optimized decoders)
 
 ## Goal of the project
-The goal of the project is to implement a state of the art end-to-end training pipeline with the following features:
+The goal of the project is to implement a state of the art end-to-end training pipeline for hyper-spectral image data processing using existing state of the art methods.
+The parts of the project that will be evaluated:
+- Pretraining methods, and which one is more suitable(and why) for HSI extraction.
+- Decoder networks, and what networks are more suitable for segmentation for the previously used training methods.
 
-- [x] ViT based model
-- [x] MAE based self-supervised pretraining
-- [ ] Finetuning on downstream task for land segmentation
+In either case the encoders are frozen on the downstream training, for better comparison of the methods.
+
 
 ## Setup
-The project is inteded to run on the Paperspace Gradient platform however if needed it can be ran locally. The project uses the orbit-software-base as its image, using this image will ensure that all dependencies are installed. The image is gpu enabled such that the model can be trained on a gpu. The image can be found [here](https://hub.docker.com/repository/docker/guorbit/orbit-software-base/general). This includes a propreitary library the orbit utilities for deep learning
+The project runs on the nvidia cuda platform. the easiest way to run the project is through the docker file provided in the repository, which contains all the necessary dependencies for the project.

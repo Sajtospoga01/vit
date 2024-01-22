@@ -172,7 +172,7 @@ class Block(nn.Module):
         x2 = self.mlp(x2)
         x2 = self.ls2(x2)
         x = x + self.drop_path2(x2)
-        return x, attention
+        return x
 
 class PatchEmbed(nn.Module):
     """ 2D Image to Patch Embedding

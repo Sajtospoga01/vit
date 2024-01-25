@@ -8,6 +8,7 @@ from src.dinov2.models.dinov2_model import SSLMetaArch
 from src.utils.utils import load_cfg
 import wandb
 
+
 from mmcv.runner import load_checkpoint,build_runner
 from mmcv.runner import TextLoggerHook
 from mmseg.apis import init_segmentor, inference_segmentor
@@ -24,7 +25,7 @@ from mmseg.core.builder import build_optimizer
 from src.dinov2.eval.segmentation import models
 from functools import partial
 import src.dinov2.eval.segmentation.hooks
-
+from src.dinov2.models import decoder
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
         super().__init__()

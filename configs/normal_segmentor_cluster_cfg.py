@@ -193,11 +193,11 @@ model = dict(
     pretrained=None,
     backbone=dict(type='DinoVisionTransformer', out_indices=[8, 9, 10, 11]),
     decode_head=dict(
-        type='BNHead',
+        type='MultiScaleDecoder',
         in_channels=[768, 768, 768, 768],
         in_index=[0, 1, 2, 3],
         input_transform='resize_concat',
-        channels=3072,
+        channels=384,
         dropout_ratio=0,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),

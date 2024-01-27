@@ -210,7 +210,7 @@ model = dict(
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
         loss_decode=dict(
-            type='FocalLoss', use_sigmoid=False, loss_weight=1.0)
+            type='FocalLoss', use_sigmoid=True, loss_weight=1.0)
         
         ),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))

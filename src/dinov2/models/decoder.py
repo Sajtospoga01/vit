@@ -38,7 +38,7 @@ class MultiScaleDecoder(BaseDecodeHead):
         """
         # print("inputs", [i.shape for i in inputs])
         x = self._transform_inputs(inputs)
-        print("x", x.shape)
+        # print("x", x.shape)
         feats = self.bn(x)
         # print("feats", feats.shape)
         return feats
@@ -50,7 +50,7 @@ class MultiScaleDecoder(BaseDecodeHead):
         Returns:
             Tensor: The transformed inputs
         """
-        print("inputs", [i.shape for i in inputs])
+        # print("inputs", [i.shape for i in inputs])
 
         if self.input_transform == "resize_concat":
             # accept lists (for cls token)
@@ -69,7 +69,7 @@ class MultiScaleDecoder(BaseDecodeHead):
             inputs = [inputs[i] for i in self.in_index]
             # Resizing shenanigans
             # print("before", *(x.shape for x in inputs))
-            print("resize_factors", self.resize_factors)
+            # print("resize_factors", self.resize_factors)
 
 
             upsampled_inputs = []
@@ -183,7 +183,7 @@ class TransformerDecoder(BaseDecodeHead):
         Returns:
             Tensor: The transformed inputs
         """
-        print("inputs", [i.shape for i in inputs])
+        # print("inputs", [i.shape for i in inputs])
         
         inputs = torch.cat(inputs, dim=1)
         inputs = inputs.view(-1,self.embed_dim,self.num_patches)
@@ -191,7 +191,7 @@ class TransformerDecoder(BaseDecodeHead):
         batch_size = inputs.shape[0]
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)  # Expand CLS token to match the batch size
         inputs = torch.cat([cls_tokens, inputs], dim=1)
-        print("inputs shape: ",inputs.shape)
+        # print("inputs shape: ",inputs.shape)
         x = self.decoder_embed(inputs)
 
         # add pos embed
@@ -215,5 +215,5 @@ class TransformerDecoder(BaseDecodeHead):
         """Forward function."""
         output = self._forward_feature(inputs)
         # output = self.cls_seg(output)
-        print(output.shape)
+        # print(output.shape)
         return output

@@ -210,12 +210,7 @@ model = dict(
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
         loss_decode=dict(
-            type='CombinedLoss',  # Use the custom CombinedLoss
-            losses=[
-                dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.5),  # Adjust the loss_weight as needed
-                dict(type='DiceLoss', loss_weight=0.5)  # Example additional loss
-            ]
-        ),
+            type='focal_loss', use_sigmoid=False, loss_weight=1.0)
         
         ),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))

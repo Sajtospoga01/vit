@@ -102,7 +102,7 @@ class MultiScaleDecoder(BaseDecodeHead):
 @HEADS.register_module()
 class TransformerDecoder(BaseDecodeHead):
 
-    def __init__(self,img_size,embed_dim,decoder_embed_dim,patch_size,decoder_depth,classes,num_heads, resize_factors = None, **kwargs):
+    def __init__(self,img_size,embed_dim,decoder_embed_dim,patch_size,decoder_depth,classes,num_heads,drop,attn_drop,drop_path, resize_factors = None, **kwargs):
         super().__init__(**kwargs)
         self.embed_dim = embed_dim
         self.patch_size = patch_size
@@ -110,7 +110,7 @@ class TransformerDecoder(BaseDecodeHead):
         self.decoder_embed = nn.Linear(embed_dim, decoder_embed_dim, bias=True)
         self.decoder_pos_embed = nn.Parameter(torch.zeros(1, self.num_patches + 1, decoder_embed_dim), requires_grad=False)  # fixed sin-cos embedding
         self.decoder_blocks = nn.ModuleList([
-            Block(decoder_embed_dim,num_heads = num_heads, attn_class=MemEffAttention)
+            Block(decoder_embed_dim,num_heads = num_heads,drop = drop, attn_drop = attn_drop, drop_path=drop_path, attn_class=MemEffAttention)
             for i in range(decoder_depth)])
         
         self.decoder_norm = nn.LayerNorm(decoder_embed_dim)

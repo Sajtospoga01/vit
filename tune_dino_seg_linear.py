@@ -26,7 +26,7 @@ from src.dinov2.eval.segmentation import models
 from functools import partial
 import src.dinov2.eval.segmentation.hooks
 from src.dinov2.models import decoder
-from mmseg.models.losses import focal_loss,dice_loss
+from mmseg.models.losses import focal_loss
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
         super().__init__()

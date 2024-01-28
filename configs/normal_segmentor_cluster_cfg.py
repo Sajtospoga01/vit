@@ -182,7 +182,7 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=4000)
+runner = dict(type='IterBasedRunner', max_iters=40000)
 checkpoint_config = dict(by_epoch=False, interval=200,out_dir='/nfs/segmentor/checkpoints')
 evaluation = dict(interval=200, metric='mIoU', pre_eval=True)
 fp16 = None
@@ -196,7 +196,7 @@ model = dict(
         type='TransformerDecoder',
         img_size = (64,64),
         embed_dim = 768 * 4,
-        decoder_embed_dim = 384 * 1,
+        decoder_embed_dim = 384 * 2,
         patch_size = 8,
         decoder_depth = 2,
         classes = 24,

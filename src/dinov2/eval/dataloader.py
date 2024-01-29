@@ -25,9 +25,40 @@ class WHU_OHS(CustomDataset):
             img_suffix='.tif', seg_map_suffix='.tif', **kwargs)
         # assert os.path.exists(self.img_dir) and self.split is not None
         
-    
 
+@PIPELINES.register_module()
+class WrapInList(object):
+    """Wrap the results(dict) in list.
 
+    This class can be used as a middle stage before ``Collect``.
+
+    Args:
+        keys (list[str]): Keys that need to be wrapped in list.
+    """
+
+    def __init__(self, keys):
+        self.keys = keys
+
+    def __call__(self, results):
+        """Call function to wrap the results in list.
+
+        Args:
+            results (dict): Result dict contains the data to wrap.
+
+        Returns:
+            dict: The result dict with values wrapped in list.
+        """
+        
+        for key in self.keys:
+            results[key] = [results[key]]
+        
+        for key in results.keys():
+            print(type(results[key]))
+        return results
+
+    def __repr__(self):
+        """str: Return a string that describes the module."""
+        return f'{self.__class__.__name__}(keys={self.keys})'
 
 
 @PIPELINES.register_module()

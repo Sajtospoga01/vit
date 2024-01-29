@@ -86,10 +86,10 @@ data = dict(
         img_dir='images/validation',
         ann_dir='annotations/validation',
         pipeline=[
-            dict(type='LoadImageFromFile'),
+            dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 640),
+                img_scale=(9999999, 64),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -184,7 +184,7 @@ lr_config = dict(
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=100)
 checkpoint_config = dict(by_epoch=False, interval=100)
-evaluation = dict(interval=40000, metric='mIoU', pre_eval=True)
+evaluation = dict(interval=1, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)
@@ -212,8 +212,10 @@ model = dict(
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
+        # loss_decode=dict(
+        #     type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0)),
         loss_decode=dict(
-            type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0)),
+            type='PatchWiseCrossEntropyLoss',in_chans=24, patch_size=8, loss_weight=1.0)),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)

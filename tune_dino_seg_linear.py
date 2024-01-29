@@ -28,6 +28,9 @@ import src.dinov2.eval.segmentation.hooks
 from src.dinov2.models import decoder
 from mmseg.models.losses import focal_loss
 from mmcv.runner import EvalHook, DistEvalHook
+from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
+
+
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
         super().__init__()

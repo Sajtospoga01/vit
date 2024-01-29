@@ -216,14 +216,16 @@ def main():
         )
     )
 
-    eval_hook = EvalHook(eval_data_loader, interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
+    eval_hook = EvalHook(eval_data_loader,by_epoch = False, interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
 
 
     runner.register_training_hooks(
         lr_config=cfg_mmcv.lr_config,
         optimizer_config=cfg_mmcv.optimizer_config,
         checkpoint_config=cfg_mmcv.checkpoint_config,
-        log_config=cfg_mmcv.log_config)
+        log_config=cfg_mmcv.log_config
+            
+    )
     
     runner.register_hook(eval_hook)
   

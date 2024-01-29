@@ -204,7 +204,7 @@ def main():
         )
     )
 
-    eval_hook = EvalHook(data_loaders[1], interval = cfg.evaluation.interval,save_best = True,save_best_path = '/nfs/segmentor/checkpoints', metric = cfg.evaluation.metric, pre_eval = cfg.evaluation.pre_eval)
+    eval_hook = EvalHook(data_loaders[1], interval = cfg_mmcv.evaluation.interval,save_best = True,save_best_path = '/nfs/segmentor/checkpoints', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
 
 
     runner.register_training_hooks(

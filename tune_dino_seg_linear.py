@@ -175,7 +175,7 @@ def main():
 
     datasets = [
         build_dataset(cfg_mmcv.data.train),
-        build_dataset(cfg.data.val)
+        build_dataset(cfg_mmcv.data.val)
     ]
 
     data_loaders = [

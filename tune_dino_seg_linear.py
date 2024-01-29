@@ -27,6 +27,7 @@ from functools import partial
 import src.dinov2.eval.segmentation.hooks
 from src.dinov2.models import decoder
 from mmseg.models.losses import focal_loss
+from mmcv.runner import EvalHook, DistEvalHook
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
         super().__init__()
@@ -173,7 +174,8 @@ def main():
     # Move your model to the selected device
 
     datasets = [
-        build_dataset(cfg_mmcv.data.train)
+        build_dataset(cfg_mmcv.data.train),
+        build_dataset(cfg.data.val)
     ]
 
     data_loaders = [
@@ -202,11 +204,16 @@ def main():
         )
     )
 
+    eval_hook = EvalHook(data_loaders[1], interval = cfg.evaluation.interval,save_best = True,save_best_path = '/nfs/segmentor/checkpoints', metric = cfg.evaluation.metric, pre_eval = cfg.evaluation.pre_eval)
+
+
     runner.register_training_hooks(
         lr_config=cfg_mmcv.lr_config,
         optimizer_config=cfg_mmcv.optimizer_config,
         checkpoint_config=cfg_mmcv.checkpoint_config,
         log_config=cfg_mmcv.log_config)
+    
+    runner.register_hook(eval_hook)
   
     runner.run(
         data_loaders=data_loaders,

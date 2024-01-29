@@ -43,7 +43,7 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type='WHU_OHS',
-        data_root='/notebooks/mock_data/',
+        data_root='/datasets/hsi-seg',
         img_dir='images/train',
         ann_dir='annotations/train',
         pipeline=[
@@ -81,8 +81,8 @@ data = dict(
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
     val=dict(
-        type='ADE20KDataset',
-        data_root='/checkpoint/dino/datasets/ADE20kChallengeData2016',
+        type='WHU_OHS',
+        data_root='/datasets/hsi-seg',
         img_dir='images/validation',
         ann_dir='annotations/validation',
         pipeline=[
@@ -96,10 +96,25 @@ data = dict(
                     dict(type='Resize', keep_ratio=True),
                     dict(type='RandomFlip'),
                     dict(
-                        type='Normalize',
-                        mean=[123.675, 116.28, 103.53],
-                        std=[58.395, 57.12, 57.375],
-                        to_rgb=True),
+                        type='HSINormalize',
+                        mean=[  
+                            136.43702139, 136.95781982, 136.70735693, 136.91850906, 137.12465157,
+                            137.26050865, 137.37743316, 137.24835798, 137.04779119, 136.9453704,
+                            136.79646442, 136.68328908, 136.28231996, 136.02395119, 136.01146934,
+                            136.72767901, 137.38975674, 137.58604882, 137.61197314, 137.46675538,
+                            137.57319831, 137.69239868, 137.72318172, 137.76894864, 137.74861655,
+                            137.77535075, 137.80038781, 137.85482571, 137.88595859, 137.9490434,
+                            138.00128494, 138.17846624
+                            ],
+                        std=[
+                            33.48886853, 33.22482796, 33.4670978, 33.53758141, 33.48675988, 33.33348355,
+                            33.35096189, 33.63958817, 33.85081288, 34.08314358, 34.37542553, 34.60344274,
+                            34.80732573, 35.17761688, 35.1956623, 34.43121367, 33.76600779, 33.77061146,
+                            33.92844916, 34.0370747, 34.0285642, 33.87601205, 33.81035869, 33.66611756,
+                            33.74440912, 33.69755911, 33.69845938, 33.6707364, 33.62571536, 33.44615438,
+                            33.27907802, 32.90732107
+                            ],
+                        ),
                     dict(type='ImageToTensor', keys=['img']),
                     dict(type='Collect', keys=['img'])
                 ])
@@ -183,9 +198,12 @@ model = dict(
         embed_dim = 768 * 4,
         decoder_embed_dim = 384 * 2,
         patch_size = 8,
-        decoder_depth = 4,
+        decoder_depth = 2,
         classes = 24,
-        num_heads=6,
+        num_heads=12,
+        drop = 0.2,
+        attn_drop = 0.2, 
+        drop_path=0.2,
         in_channels=[768, 768, 768, 768],
         in_index=[0, 1, 2, 3],
         input_transform='resize_concat',
@@ -195,8 +213,8 @@ model = dict(
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
         loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+            type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0)),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)
-work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'
+work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'  

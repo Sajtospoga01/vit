@@ -213,8 +213,7 @@ model = dict(
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
         loss_decode=dict(
-            type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0)
-        
+            type='PatchWiseCrossEntropyLoss',in_chans=24, patch_size=8, loss_weight=1.0),
         ),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True

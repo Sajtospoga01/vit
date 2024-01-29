@@ -192,7 +192,7 @@ def main():
 
     eval_data_loader = build_dataloader(
         eval_dataset,
-        samples_per_gpu = 4,
+        samples_per_gpu = 1,
         workers_per_gpu = 1,
         seed = 42,
         drop_last = True,

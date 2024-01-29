@@ -195,7 +195,7 @@ def main():
 
     eval_data_loader = build_dataloader(
         eval_dataset,
-        samples_per_gpu = 1,
+        samples_per_gpu = 16,
         workers_per_gpu = 1,
         seed = 42,
         drop_last = True,
@@ -221,7 +221,6 @@ def main():
 
     eval_hook = EvalHook(eval_data_loader,by_epoch = False, interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
 
-
     runner.register_training_hooks(
         lr_config=cfg_mmcv.lr_config,
         optimizer_config=cfg_mmcv.optimizer_config,
@@ -236,11 +235,6 @@ def main():
         data_loaders=data_loaders,
         workflow=cfg_mmcv.workflow,
     )
-
-
-
-
-
 
 if __name__ == '__main__':
     main()

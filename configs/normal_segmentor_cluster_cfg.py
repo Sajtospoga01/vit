@@ -184,7 +184,7 @@ lr_config = dict(
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=40000)
 checkpoint_config = dict(by_epoch=False, interval=200,out_dir='/nfs/segmentor/checkpoints')
-evaluation = dict(interval=200, metric='mIoU', pre_eval=True)
+evaluation = dict(interval=201, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)

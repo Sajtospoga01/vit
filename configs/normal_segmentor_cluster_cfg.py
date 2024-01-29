@@ -147,7 +147,7 @@ log_config = dict(
     interval=50, hooks=[
         dict(type='TextLoggerHook', by_epoch=False, out_dir='/nfs/segmentor/logs'),
         dict(
-            type='WandbLoggerHook',  # Enables logging to Weights & Biases
+            type='MMSegWandbHook',  # Enables logging to Weights & Biases
             init_kwargs=dict(
                 project='vit-dino',  # Name of the W&B project
                 # config=dict(your_config_dict),  # Optional: log model configuration
@@ -155,7 +155,10 @@ log_config = dict(
             ),
 
             interval=10,  # Log metrics every 10 iterations
-            log_artifact=True,  # If True, log artifacts like checkpoints
+            # log_artifact=True,  # If True, log artifacts like checkpoints
+            log_checkpoint=True,
+            log_checkpoint_metadata=True,
+            num_eval_images = 10,
             # ... other WandbLoggerHook arguments
         ),
         ])

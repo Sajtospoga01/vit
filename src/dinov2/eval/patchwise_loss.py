@@ -141,7 +141,7 @@ class PatchWiseCrossEntropyLoss(nn.Module):
         
 
 
-    
+    @property
     def loss_name(self):
         """Loss Name.
 
@@ -156,6 +156,7 @@ class PatchWiseCrossEntropyLoss(nn.Module):
         """
         return self._loss_name
     
+
     def patchify(self, imgs, channels):
         """
         imgs: (N, C, H, W)

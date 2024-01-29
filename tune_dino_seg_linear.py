@@ -204,7 +204,7 @@ def main():
         )
     )
 
-    eval_hook = EvalHook(data_loaders[1], interval = cfg_mmcv.evaluation.interval,save_best = True, metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
+    eval_hook = EvalHook(data_loaders[1], interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
 
 
     runner.register_training_hooks(

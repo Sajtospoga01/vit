@@ -116,7 +116,7 @@ data = dict(
                     ],
                 ),
             dict(type='Pad', size=(64, 64), pad_val=0, seg_pad_val=255),
-            dict(type='DefaultFormatBundle'),
+            dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
             
         ]),

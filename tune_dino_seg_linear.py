@@ -174,9 +174,10 @@ def main():
     # Move your model to the selected device
 
     datasets = [
-        build_dataset(cfg_mmcv.data.train),
-        build_dataset(cfg_mmcv.data.val)
+        build_dataset(cfg_mmcv.data.train),   
     ]
+
+    eval_dataset = build_dataset(cfg_mmcv.data.val)
 
     data_loaders = [
         build_dataloader(
@@ -188,6 +189,17 @@ def main():
             
         ) for ds in datasets
     ]
+
+    eval_data_loader = build_dataloader(
+        eval_dataset,
+        samples_per_gpu = 32,
+        workers_per_gpu = 1,
+        seed = 42,
+        drop_last = False,
+    )
+
+
+
     cfg_mmcv.log_config.hooks[1].init_kwargs.config = cfg_mmcv
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
@@ -204,7 +216,7 @@ def main():
         )
     )
 
-    eval_hook = EvalHook(data_loaders[1], interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
+    eval_hook = EvalHook(eval_data_loader, interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
 
 
     runner.register_training_hooks(

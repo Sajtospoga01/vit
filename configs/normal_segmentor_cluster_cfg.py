@@ -86,7 +86,7 @@ data = dict(
         img_dir='images/validate',
         ann_dir='annotations/validate',
         pipeline=[
-            dict(type='LoadImageFromFile'),
+            dict(type='MyLoadImageFromFile'),
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',

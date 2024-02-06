@@ -59,17 +59,27 @@ class DINOv2Trainer():
         img_size = cfg.crops.global_crops_size
         patch_size = cfg.student.patch_size
         n_tokens = (img_size // patch_size) ** 2
+        bands = cfg.io.bands
+        spectral_patch_size = cfg.student.spectral_patch_size
 
+        n_spectral_tokens = bands//spectral_patch_size
         mask_generator = MaskingGenerator(
             input_size=(img_size // patch_size, img_size // patch_size),
             max_num_patches=0.5 * img_size // patch_size * img_size // patch_size,
+        )
+
+        mask_spectral_generator = MaskingGenerator(
+            input_size=(bands // spectral_patch_size,1),
+            max_num_patches=0.5 * bands // spectral_patch_size * 1,
         )
 
         self.collate_fn = CollateDataAndCast(
             mask_ratio_tuple=cfg.ibot.mask_ratio_min_max,
             mask_probability=cfg.ibot.mask_sample_probability,
             n_tokens=n_tokens,
+            n_spectral_tokens=n_spectral_tokens,
             mask_generator=mask_generator,
+            spectral_mask_generator=mask_spectral_generator,
             dtype=inputs_dtype,
         )
         self.periodic_checkpointer = PeriodicCheckpointer(

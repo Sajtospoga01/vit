@@ -40,7 +40,7 @@ compute_precision:
         buffer_dtype: fp32
 
 train:
-  mini_batch_size: 128
+  mini_batch_size: 64
   batch_size: 256
   epochs: 100
   warmup_epochs: 10
@@ -112,6 +112,7 @@ ibot:
 student:
   arch: "vit_small"
   patch_size: 8
+  spectral_patch_size: 2
   embed_dim: 768
   depth: 12
   num_heads: 12
@@ -120,7 +121,7 @@ student:
   layerscale: 1.0e-05
   drop_path_uniform: True
   pretrained_weights: ''
-  ffn_layer: "swiglufused"
+  ffn_layer: "mlp"
   block_chunks: 0
   qkv_bias: True
   proj_bias: True

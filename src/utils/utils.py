@@ -414,7 +414,7 @@ class MaybeToTensor:
 
 
 def load_cfg():
-    return OmegaConf.load("configs/default.yaml")
+    return OmegaConf.load("/nfs/vit_pretrain/Land-Segmentation/configs/default.yaml")
 
 
 
@@ -434,7 +434,7 @@ class Logger:
                 f.write("\n")
 
 
-def collate_data_and_cast(samples_list, mask_ratio_tuple, mask_probability, dtype, n_tokens=None, mask_generator=None):
+def collate_data_and_cast(samples_list, mask_ratio_tuple, mask_probability, dtype, n_tokens=None,n_spectral_tokens=None, mask_generator=None,spectral_mask_generator=None):
     # dtype = torch.half  # TODO: Remove
 
     n_global_crops = len(samples_list[0]["global_crops"])
@@ -445,44 +445,76 @@ def collate_data_and_cast(samples_list, mask_ratio_tuple, mask_probability, dtyp
 
     collated_local_crops = torch.stack([s["local_crops"][i] for i in range(n_local_crops) for s in samples_list])
 
+    
+
     B = len(collated_global_crops)
     N = n_tokens
+    N_spectral = n_spectral_tokens
+
     n_samples_masked = int(B * mask_probability)
+    
     probs = torch.linspace(*mask_ratio_tuple, n_samples_masked + 1)
     upperbound = 0
+    spectral_upperbound = 0
+    
     masks_list = []
+    spectral_mask_list = []
+
     for i in range(0, n_samples_masked):
         prob_min = probs[i]
         prob_max = probs[i + 1]
         masks_list.append(torch.BoolTensor(mask_generator(int(N * random.uniform(prob_min, prob_max)))))
+        spectral_mask_list.append(torch.BoolTensor(spectral_mask_generator(int(N_spectral * random.uniform(prob_min, prob_max)))))
+
         upperbound += int(N * prob_max)
+        spectral_upperbound += int(N_spectral * prob_max)
     for i in range(n_samples_masked, B):
         masks_list.append(torch.BoolTensor(mask_generator(0)))
+        spectral_mask_list.append(torch.BoolTensor(spectral_mask_generator(0)))
 
     random.shuffle(masks_list)
+    random.shuffle(spectral_mask_list)
 
     collated_masks = torch.stack(masks_list).flatten(1)
+    collated_spectral_masks = torch.stack(spectral_mask_list).flatten(1)
     mask_indices_list = collated_masks.flatten().nonzero().flatten()
+    spectral_mask_indices_list = collated_spectral_masks.flatten().nonzero().flatten()
     masks_weight = (1 / collated_masks.sum(-1).clamp(min=1.0)).unsqueeze(-1).expand_as(collated_masks)[collated_masks]
+    spectral_masks_weight = (1 / collated_spectral_masks.sum(-1).clamp(min=1.0)).unsqueeze(-1).expand_as(collated_spectral_masks)[collated_spectral_masks]
+    # spectral masks
+
 
     return {
         "collated_global_crops": collated_global_crops.to(dtype),
         "collated_local_crops": collated_local_crops.to(dtype),
+        
         "collated_masks": collated_masks,
         "mask_indices_list": mask_indices_list,
         "masks_weight": masks_weight,
+        
         "upperbound": upperbound,
+        "spectral_upperbound": spectral_upperbound,
+
+        "collated_spectral_masks": collated_spectral_masks,
+        "spectral_mask_indices_list": spectral_mask_indices_list,
+        "spectral_masks_weight": spectral_masks_weight,
+        "spectral_upperbound": spectral_upperbound,
+
+
         "n_masked_patches": torch.full((1,), fill_value=mask_indices_list.shape[0], dtype=torch.long),
+        "n_masked_spectral_patches": torch.full((1,), fill_value=spectral_mask_indices_list.shape[0], dtype=torch.long),
     }
 
 class CollateDataAndCast:
-    def __init__(self, mask_ratio_tuple, mask_probability, dtype, n_tokens=None, mask_generator=None):
+    def __init__(self, mask_ratio_tuple, mask_probability, dtype, n_tokens=None,n_spectral_tokens=None, mask_generator=None,spectral_mask_generator=None):
         self.mask_ratio_tuple = mask_ratio_tuple
         self.mask_probability = mask_probability
         self.dtype = dtype
         self.n_tokens = n_tokens
         self.mask_generator = mask_generator
+        self.spectral_mask_generator = spectral_mask_generator
+        self.n_spectral_tokens = n_spectral_tokens
 
     def __call__(self, samples_list):
-        return collate_data_and_cast(samples_list, self.mask_ratio_tuple, self.mask_probability, self.dtype, self.n_tokens, self.mask_generator)
+        return collate_data_and_cast(samples_list, self.mask_ratio_tuple, self.mask_probability, self.dtype, self.n_tokens,self.n_spectral_tokens, self.mask_generator,self.spectral_mask_generator)
 

@@ -4,7 +4,7 @@ from torch import nn
 import numpy as np
 import os
 import wandb
-from keys import load_env
+
 from src.utils.utils import load_cfg
 from src.utils.data_loader import FlowGeneratorExperimental
 from src.utils.data_loader_strategy import DataFactoryStrategy
@@ -88,7 +88,7 @@ def main():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    load_env()
+   
     wandb.login()
 
     distributed.enable(overwrite=True)

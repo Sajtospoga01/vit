@@ -43,7 +43,7 @@ std_per_band = np.array([
     33.27907802, 32.90732107
 ])
 HPARAMS = {
-    'mini_batch_size': 128,
+    'mini_batch_size': 64,
     'batch_size': 256,
     'epoch': 100,
     'criterion': nn.MSELoss,

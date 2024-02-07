@@ -8,6 +8,7 @@ from src.dinov2.fsdp import reshard_fsdp_model,get_fsdp_modules,get_fsdp_wrapper
 from src.dinov2.param_groups import get_params_groups_with_decay, fuse_params_groups,has_batchnorms
 import logging
 from src.dinov2.models.base_models import BlockChunk
+from src.hsi_vit.layers import SpatialSpectralBlock
 
 try:
     from xformers.ops import fmha
@@ -886,9 +887,9 @@ class SSLMetaArchHSI(nn.Module):
         for k, v in self.student.items():
             self.teacher[k].load_state_dict(self.student[k].state_dict())
             student_model_cfg = self.cfg.compute_precision.student[k]
-            self.student[k] = get_fsdp_wrapper(student_model_cfg, modules_to_wrap={BlockChunk})(self.student[k])
+            self.student[k] = get_fsdp_wrapper(student_model_cfg, modules_to_wrap={SpatialSpectralBlock})(self.student[k])
             teacher_model_cfg = self.cfg.compute_precision.teacher[k]
-            self.teacher[k] = get_fsdp_wrapper(teacher_model_cfg, modules_to_wrap={BlockChunk})(self.teacher[k])
+            self.teacher[k] = get_fsdp_wrapper(teacher_model_cfg, modules_to_wrap={SpatialSpectralBlock})(self.teacher[k])
             print(f"wrapped {k} with FSDP: {type(self.student[k])}")
 
         print("type(self.student): ", type(self.student))

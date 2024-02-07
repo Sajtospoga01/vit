@@ -89,7 +89,7 @@ class DINOv2Trainer():
                 save_to_disk=True,
                 optimizer=optimizer,
             ),
-            period = 1 * len(train_loader),
+            period = 200,
             max_iter=cfg.train.epochs * len(train_loader),
             max_to_keep=3,
         )

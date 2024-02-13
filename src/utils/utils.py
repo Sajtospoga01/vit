@@ -414,7 +414,7 @@ class MaybeToTensor:
 
 
 def load_cfg():
-    return OmegaConf.load("/nfs/vit_pretrain/Land-Segmentation/configs/default.yaml")
+    return OmegaConf.load("configs/default.yaml")
 
 
 

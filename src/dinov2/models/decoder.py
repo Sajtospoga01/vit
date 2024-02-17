@@ -214,6 +214,7 @@ class TransformerDecoder(BaseDecodeHead):
     def forward(self, inputs):
         """Forward function."""
         output = self._forward_feature(inputs)
+        print(output.shape)
         output = self.cls_seg(output)
         # print(output.shape)
         return output

@@ -215,7 +215,7 @@ model = dict(
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
-        loss_decode=dict(type='FocalLoss', gamma=3.5, alpha=0.60, loss_weight=1.0), 
+        loss_decode=dict(type='FocalLoss', gamma=3.5, alpha=0.75, loss_weight=1.0), 
         ),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True

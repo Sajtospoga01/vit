@@ -199,11 +199,11 @@ model = dict(
         type='TransformerDecoder',
         img_size = (64,64),
         embed_dim = 768 * 4,
-        decoder_embed_dim = 384 * 2,
+        decoder_embed_dim = 384 * 1,
         patch_size = 8,
         decoder_depth = 2,
         classes = 24,
-        num_heads=12,
+        num_heads=6,
         drop = 0.2,
         attn_drop = 0.2, 
         drop_path=0.2,
@@ -215,17 +215,7 @@ model = dict(
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
-        loss_decode=[
-            dict(
-                type='PatchWiseCrossEntropyLoss',
-                in_chans=24,
-                patch_size=8,
-                loss_weight=1.0
-            ),
-            dict(
-                type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0
-            ),
-        ]
+        loss_decode=dict(type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
         ),
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True

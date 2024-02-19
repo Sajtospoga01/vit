@@ -169,7 +169,7 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 optimizer = dict(
-    type='AdamW', lr=0.0001, weight_decay=0.0001, betas=(0.9, 0.999))
+    type='AdamW', lr=0.0001, weight_decay=0.001, betas=(0.9, 0.999))
 optimizer_config = dict(
     type='DistOptimizerHook',
     update_interval=1,
@@ -195,28 +195,41 @@ model = dict(
     type='EncoderDecoder',
     pretrained=None,
     backbone=dict(type='DinoVisionTransformer', out_indices=[10, 11]),
+    # decode_head=dict(
+    #     type='TransformerDecoder',
+    #     img_size = (64,64),
+    #     embed_dim = 768 * 2,
+    #     decoder_embed_dim = 768 * 1,
+    #     patch_size = 8,
+    #     decoder_depth = 6,
+    #     classes = 128,
+    #     num_heads=8,
+    #     drop = 0.5,
+    #     attn_drop = 0.2, 
+    #     drop_path=0.5,
+    #     in_channels=[768, 768],
+    #     in_index=[0, 1],
+    #     input_transform='resize_concat',
+    #     channels=128,
+    #     dropout_ratio=0,
+    #     num_classes=24,
+    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
+    #     align_corners=False,
+    #     loss_decode=dict(type='FocalLoss', gamma=1.5, alpha=0.75, loss_weight=1.0), 
+    #     ),
     decode_head=dict(
-        type='TransformerDecoder',
-        img_size = (64,64),
-        embed_dim = 768 * 2,
-        decoder_embed_dim = 768 * 1,
-        patch_size = 8,
-        decoder_depth = 6,
-        classes = 128,
-        num_heads=8,
-        drop = 0.5,
-        attn_drop = 0.2, 
-        drop_path=0.5,
+        type='BNHead',
         in_channels=[768, 768],
         in_index=[0, 1],
         input_transform='resize_concat',
-        channels=128,
-        dropout_ratio=0,
+        channels=1536,
+        dropout_ratio=0.4,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
-        loss_decode=dict(type='FocalLoss', gamma=1.5, alpha=0.75, loss_weight=1.0), 
-        ),
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)

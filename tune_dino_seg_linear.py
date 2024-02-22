@@ -4,7 +4,7 @@ import src.dinov2.distributed as distributed
 import src.dinov2.eval.dataloader
 import src.dinov2.eval.optimizers 
 import src.dinov2.eval.segmentation_m2f.models.segmentors
-from src.dinov2.models.dinov2_model import SSLMetaArch
+from src.dinov2.models.dinov2_model import SSLMetaArch, SSLMetaArchHSI
 from src.utils.utils import load_cfg
 import wandb
 
@@ -29,7 +29,7 @@ from src.dinov2.models import decoder
 from mmseg.models.losses import focal_loss
 from mmcv.runner import EvalHook, DistEvalHook
 from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
-
+from src.dinov2.fsdp import FSDPCheckpointer
 
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
@@ -76,12 +76,12 @@ def main():
     distributed.enable(overwrite=True)
     cfg = load_cfg()
     # load pretrained backbone
-    Dino2ModelHandler = SSLMetaArch(cfg)
+    Dino2ModelHandler = SSLMetaArchHSI(cfg)
     print(cfg.student.num_register_tokens)
     total_params = sum(p.numel() for p in Dino2ModelHandler.parameters())
     print(f'{total_params:,} total parameters.')
     print(f"Separate sizes:\n\tTeacher: {sum(p.numel() for p in Dino2ModelHandler.teacher.parameters()):,}\n\tStudent: {sum(p.numel() for p in Dino2ModelHandler.student.parameters()):,}")
-    Dino2ModelHandler = load_weigths_to_model(Dino2ModelHandler)
+    
 
     def load_config_from_url(url: str) -> str:
         with urllib.request.urlopen(url) as f:
@@ -113,59 +113,8 @@ def main():
 
     populated_layers = []
 
-    manual_mapping = {
-        "backbone.level_embed":"backbone.blocks.0.ls1.gamma",
-        "backbone.blocks.0.gamma1":"backbone.blocks.0.ls1.gamma",
-        "backbone.blocks.0.gamma2":"backbone.blocks.0.ls2.gamma",
-        "backbone.blocks.1.gamma1":"backbone.blocks.1.ls1.gamma",
-        "backbone.blocks.1.gamma2":"backbone.blocks.1.ls2.gamma",
-        "backbone.blocks.2.gamma1":"backbone.blocks.2.ls1.gamma",
-        "backbone.blocks.2.gamma2":"backbone.blocks.2.ls2.gamma",
-        "backbone.blocks.3.gamma1":"backbone.blocks.3.ls1.gamma",
-        "backbone.blocks.3.gamma2":"backbone.blocks.3.ls2.gamma",
-        "backbone.blocks.4.gamma1":"backbone.blocks.4.ls1.gamma",
-        "backbone.blocks.4.gamma2":"backbone.blocks.4.ls2.gamma",
-        "backbone.blocks.5.gamma1":"backbone.blocks.5.ls1.gamma",
-        "backbone.blocks.5.gamma2":"backbone.blocks.5.ls2.gamma",
-        "backbone.blocks.6.gamma1":"backbone.blocks.6.ls1.gamma",
-        "backbone.blocks.6.gamma2":"backbone.blocks.6.ls2.gamma",
-        "backbone.blocks.7.gamma1":"backbone.blocks.7.ls1.gamma",
-        "backbone.blocks.7.gamma2":"backbone.blocks.7.ls2.gamma",
-        "backbone.blocks.8.gamma1":"backbone.blocks.8.ls1.gamma",
-        "backbone.blocks.8.gamma2":"backbone.blocks.8.ls2.gamma",
-        "backbone.blocks.9.gamma1":"backbone.blocks.9.ls1.gamma",
-        "backbone.blocks.9.gamma2":"backbone.blocks.9.ls2.gamma",
-        "backbone.blocks.10.gamma1":"backbone.blocks.10.ls1.gamma",
-        "backbone.blocks.10.gamma2":"backbone.blocks.10.ls2.gamma",
-        "backbone.blocks.11.gamma1":"backbone.blocks.11.ls1.gamma",
-        "backbone.blocks.11.gamma2":"backbone.blocks.11.ls2.gamma",
-    }
-
     for name, param in old_state_dict.items():
-        if name in new_state_dict and param.size() == new_state_dict[name].size():
-            # Load the state dict and freeze the layer
-            new_state_dict[name].copy_(param)
-            param.requires_grad = False
-            populated_layers.append(name)
-        else:
-            # Handle layers that do not match or additional processing if required
-            print(f"Skipping layer: {name}, as it's not present or mismatched in the new model")
-            print(f"Layer present in new model: {name in new_state_dict}")
-            print(param.size(), old_state_dict[name].size())
-
-    # Now we freeze the populated layers by setting requires_grad to False
-    for name, param in new_state_dict.items():
-        if name in populated_layers:
-            param.requires_grad = False
-        elif name not in populated_layers and name in manual_mapping:
-            # Assuming manual mapping is needed for some layers
-            print(f"Loading layer: {name} from {manual_mapping[name]}")
-            new_state_dict[name].copy_(old_state_dict[manual_mapping[name]])
-            param.requires_grad = False  # Freeze this layer as well
-            populated_layers.append(name)
-        else:
-            print(f"Layer not populated and no manual mapping provided: {name}")
-
+        param.requires_grad = False
 
     # prepare training loop
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -206,6 +155,13 @@ def main():
     cfg_mmcv.log_config.hooks[1].init_kwargs.config = cfg_mmcv
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
+
+    fsdp_checkpointer = FSDPCheckpointer(
+                Dino2ModelHandler,
+                save_dir=cfg.train.output_dir,
+                save_to_disk=True,
+                optimizer=optimizer,)
+    fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
 
     # criterion 
 

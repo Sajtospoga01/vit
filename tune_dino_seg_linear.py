@@ -103,6 +103,9 @@ def main():
                 save_to_disk=True,
                 optimizer=optim,)
     fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
+    for param in Dino2ModelHandler.parameters():
+        if param.dtype == torch.float16:
+            param.data = param.data.to(torch.float32)
     model = build_segmentor(cfg_mmcv.model)
     model.backbone.forward = partial(
         Dino2ModelHandler.teacher.backbone.get_intermediate_layers,

@@ -155,12 +155,12 @@ def main():
     cfg_mmcv.log_config.hooks[1].init_kwargs.config = cfg_mmcv
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
-
+    optim = torch.optim.AdamW(Dino2ModelHandler.get_params_groups(), betas=(cfg.optim.adamw_beta1, cfg.optim.adamw_beta2)) # not used only for loading the model back in
     fsdp_checkpointer = FSDPCheckpointer(
                 Dino2ModelHandler,
                 save_dir=cfg.train.output_dir,
                 save_to_disk=True,
-                optimizer=optimizer,)
+                optimizer=optim,)
     fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
 
     # criterion 

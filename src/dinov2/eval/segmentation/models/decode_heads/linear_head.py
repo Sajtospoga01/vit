@@ -15,11 +15,12 @@ from mmseg.ops import resize
 class BNHead(BaseDecodeHead):
     """Just a batchnorm."""
 
-    def __init__(self, resize_factors=None, **kwargs):
+    def __init__(self, resize_factors=None,multiout=False, **kwargs):
         super().__init__(**kwargs)
-        assert self.in_channels == self.channels
+        # assert self.in_channels == self.channels
         self.bn = nn.SyncBatchNorm(self.in_channels)
         self.resize_factors = resize_factors
+        self.multiout = multiout
 
     def _forward_feature(self, inputs):
         """Forward function for feature maps before classifying each pixel with
@@ -36,7 +37,7 @@ class BNHead(BaseDecodeHead):
         x = self._transform_inputs(inputs)
         # print("x", x.shape)
         feats = self.bn(x)
-        print("feats", feats.shape)
+        # print("feats", feats.shape)
         return feats
 
     def _transform_inputs(self, inputs):
@@ -46,7 +47,14 @@ class BNHead(BaseDecodeHead):
         Returns:
             Tensor: The transformed inputs
         """
-
+        
+        if self.multiout:
+            new_inputs = []
+            for (y_1, y_2) in inputs:
+                new_input = torch.cat((y_1, y_2), dim=1)
+                new_inputs.append(new_input)
+                
+            inputs = new_inputs
         if self.input_transform == "resize_concat":
             # accept lists (for cls token)
             input_list = []
@@ -83,13 +91,14 @@ class BNHead(BaseDecodeHead):
         else:
             inputs = inputs[self.in_index]
 
-        print("inputs", [i.shape for i in inputs])
+        # print("inputs", [i.shape for i in inputs])
         return inputs
 
     def forward(self, inputs):
         """Forward function."""
+       
         output = self._forward_feature(inputs)
-        print("output", output.shape)
+        # print("output", output.shape)
         output = self.cls_seg(output)
-        print("output after cls", output.shape)
+        # print("output after cls", output.shape)
         return output

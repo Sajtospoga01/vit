@@ -215,6 +215,7 @@ class HSIViT(nn.Module):
 
         self.spatial_norm = spatial_norm_layer(embed_dim)
         self.spectral_norm = spectral_norm_layer(embed_dim)
+
         self.head = nn.Identity()
 
         self.mask_token = nn.Parameter(torch.zeros(1, embed_dim))
@@ -369,14 +370,16 @@ class HSIViT(nn.Module):
         }
 
     def _get_intermediate_layers_not_chunked(self, x, n=1):
-        x = self.prepare_tokens_with_masks(x)
-        # If n is an int, take the n last blocks. If it's a list, take them
+        x_spatial = self.prepare_tokens_with_masks(x)
+        x_spectral = self.prepare_spec_tokens_with_masks(x)
+
         output, total_block_len = [], len(self.blocks)
         blocks_to_take = range(total_block_len - n, total_block_len) if isinstance(n, int) else n
+
         for i, blk in enumerate(self.blocks):
-            x = blk(x)
+            x_spatial,x_spectral = blk(x_spatial,x_spectral)
             if i in blocks_to_take:
-                output.append(x)
+                output.append((x_spatial,x_spectral))
         assert len(output) == len(blocks_to_take), f"only {len(output)} / {len(blocks_to_take)} blocks found"
         return output
 
@@ -407,14 +410,14 @@ class HSIViT(nn.Module):
         else:
             outputs = self._get_intermediate_layers_not_chunked(x, n)
         if norm:
-            outputs = [self.norm(out) for out in outputs]
-        class_tokens = [out[:, 0] for out in outputs]
-        outputs = [out[:, 1 + self.num_register_tokens:] for out in outputs]
+            outputs = [[self.spatial_norm(out) for out in outs] for outs in outputs]
+        class_tokens = [[out[:, 0] for out in outs ]for outs in outputs]
+        outputs = [[out[:, 1 + self.num_register_tokens:] for out in outs] for outs in outputs]
         if reshape:
             B, _, w, h = x.shape
             outputs = [
-                out.reshape(B, w // self.patch_size, h // self.patch_size, -1).permute(0, 3, 1, 2).contiguous()
-                for out in outputs
+                [out.reshape(B, w // self.patch_size, h // self.patch_size, -1).permute(0, 3, 1, 2).contiguous()
+                for out in outs]for outs in outputs
             ]
         if return_class_token:
             return tuple(zip(outputs, class_tokens))

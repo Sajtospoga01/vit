@@ -94,6 +94,15 @@ def main():
     cfg_str = load_config_from_file("configs/normal_segmentor_cluster_cfg.py")
     cfg_mmcv = mmcv.Config.fromstring(cfg_str, file_format=".py")
     logger = get_logger("mmcv")
+    Dino2ModelHandler.prepare_for_distributed_training()
+    optim = torch.optim.AdamW(Dino2ModelHandler.get_params_groups(), betas=(cfg.optim.adamw_beta1, cfg.optim.adamw_beta2)) # not used only for loading the model back in
+    
+    fsdp_checkpointer = FSDPCheckpointer(
+                Dino2ModelHandler,
+                save_dir=cfg.train.output_dir,
+                save_to_disk=True,
+                optimizer=optim,)
+    fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
     model = build_segmentor(cfg_mmcv.model)
     model.backbone.forward = partial(
         Dino2ModelHandler.teacher.backbone.get_intermediate_layers,
@@ -155,14 +164,7 @@ def main():
     cfg_mmcv.log_config.hooks[1].init_kwargs.config = cfg_mmcv
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
-    optim = torch.optim.AdamW(Dino2ModelHandler.get_params_groups(), betas=(cfg.optim.adamw_beta1, cfg.optim.adamw_beta2)) # not used only for loading the model back in
-    model.prepare_for_distributed_training()
-    fsdp_checkpointer = FSDPCheckpointer(
-                Dino2ModelHandler,
-                save_dir=cfg.train.output_dir,
-                save_to_disk=True,
-                optimizer=optim,)
-    fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
+
 
     # criterion 
 

@@ -156,6 +156,7 @@ def main():
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
     optim = torch.optim.AdamW(Dino2ModelHandler.get_params_groups(), betas=(cfg.optim.adamw_beta1, cfg.optim.adamw_beta2)) # not used only for loading the model back in
+    model.prepare_for_distributed_training()
     fsdp_checkpointer = FSDPCheckpointer(
                 Dino2ModelHandler,
                 save_dir=cfg.train.output_dir,

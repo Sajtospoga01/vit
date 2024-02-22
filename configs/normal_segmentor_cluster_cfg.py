@@ -219,10 +219,11 @@ model = dict(
     #     ),
     decode_head=dict(
         type='BNHead',
-        in_channels=[768, 768],
+        multiout = True,
+        in_channels=[960, 960],
         in_index=[0, 1],
         input_transform='resize_concat',
-        channels=1536,
+        channels=1920,
         dropout_ratio=0.4,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),

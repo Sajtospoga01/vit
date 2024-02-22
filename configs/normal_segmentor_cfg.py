@@ -193,29 +193,19 @@ model = dict(
     pretrained=None,
     backbone=dict(type='DinoVisionTransformer', out_indices=[8, 9, 10, 11]),
     decode_head=dict(
-        type='TransformerDecoder',
-        img_size = (64,64),
-        embed_dim = 768 * 4,
-        decoder_embed_dim = 384 * 2,
-        patch_size = 8,
-        decoder_depth = 2,
-        classes = 24,
-        num_heads=12,
-        drop = 0.2,
-        attn_drop = 0.2, 
-        drop_path=0.2,
-        in_channels=[768, 768, 768, 768],
-        in_index=[0, 1, 2, 3],
+        type='BNHead',
+        multiout = True,
+        in_channels=[960, 960],
+        in_index=[0, 1],
         input_transform='resize_concat',
-        channels=384,
-        dropout_ratio=0,
+        channels=1920,
+        dropout_ratio=0.4,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
         align_corners=False,
-        # loss_decode=dict(
-        #     type='FocalLoss',alpha=0.25,gamma=1.5, loss_weight=1.0)),
         loss_decode=dict(
-            type='PatchWiseCrossEntropyLoss',in_chans=24, patch_size=8, loss_weight=1.0)),
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)

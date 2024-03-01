@@ -108,8 +108,7 @@ def main():
     Dino2ModelHandler.prepare_for_distributed_training()
     fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
     for param in Dino2ModelHandler.parameters():
-        if param.dtype == torch.float16:
-            param.data = param.data.to(torch.float32)
+        param.requires_grad = False
 
     # for param in Dino2ModelHandler.parameters():
     #     if param.dtype == torch.float16:

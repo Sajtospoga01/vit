@@ -30,64 +30,6 @@ from mmseg.models.losses import focal_loss
 from mmcv.runner import EvalHook, DistEvalHook
 from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
 from src.dinov2.fsdp import FSDPCheckpointer
-from src.utils.data_loader import FlowGeneratorExperimental
-from src.utils.data_loader_strategy import DataFactoryStrategy
-from utilities.segmentation_utils.reading_strategies import BatchReaderStrategy
-from utilities.segmentation_utils.constants import (
-    FileType,
-    ImageOrdering,
-)
-from utilities.segmentation_utils.ImagePreprocessor import PreprocessingQueue
-import math
-import itertools
-import torch.nn.functional as F
-import torch.nn as nn
-import os
-from src.dinov2.trainer import DINOv2Trainer
-
-
-TRAINING_DATA_PATH = "/nfs/datasets/bchsi/pb_tr/"
-VALIDATION_DATA_PATH = "/nfs/datasets/bchsi/pb_val/"
-
-NUM_CLASSES = 25
-
-HPARAMS = {
-    'mini_batch_size': 64,
-    'batch_size': 256,
-    'epoch': 100,
-    'criterion': nn.MSELoss,
-    'optimizer': torch.optim.Adam,
-    'optimizer_params': {
-        'lr': 0.0001,
-    },
-
-    # loader parameters
-    'shuffle': True,
-    'preprocess': True,
-
-    # model paramters
-    "model_parameters": {
-        "patch_size": 8,
-        # encoder specific params
-        "embed_dim": 768,
-        "depth": 12,
-        "num_heads": 12,
-        # decoder specific params
-        "decoder_embed_dim": 512,
-        "decoder_depth": 8,
-        "decoder_num_heads": 16,
-        "mlp_ratio": 4,
-    },
-
-    "io_params": {
-        "input_size": (64, 64),
-        "bands": 32,
-        "output_size": (64, 64),
-        "num_classes": NUM_CLASSES,
-    },
-}
-
-
 
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
@@ -140,57 +82,6 @@ def main():
     print(f'{total_params:,} total parameters.')
     print(f"Separate sizes:\n\tTeacher: {sum(p.numel() for p in Dino2ModelHandler.teacher.parameters()):,}\n\tStudent: {sum(p.numel() for p in Dino2ModelHandler.student.parameters()):,}")
     
-    in_queue = PreprocessingQueue([])
-
-    val_queue = PreprocessingQueue([])
-
-    X_train = BatchReaderStrategy(
-        os.path.join(TRAINING_DATA_PATH, "image"),
-        image_size=HPARAMS['io_params']['input_size'],
-    )
-
-    X_val = BatchReaderStrategy(
-        os.path.join(VALIDATION_DATA_PATH, "image"),
-        image_size=HPARAMS['io_params']['input_size'],
-    )
-
-    batch_reader = DataFactoryStrategy(X_train)
-
-    batch_reader_val = DataFactoryStrategy(X_val)
-
-    reader_args = {
-        "input_strategy": batch_reader,
-        "output_strategy": batch_reader,
-        "shuffle": HPARAMS["shuffle"],
-        "preprocessing_enabled": HPARAMS["preprocess"],
-        "channel_mask": [True for _ in range(32)],
-        "num_classes": NUM_CLASSES,
-        "batch_size": HPARAMS["batch_size"],
-        "image_ordering": ImageOrdering.CHANNEL_FIRST,
-        "type": [FileType.MULTICHANNEL, FileType.MULTICHANNEL],
-        "preprocessing_queue_image": in_queue,
-        "preprocessing_queue_mask": in_queue,
-    }
-
-    val_reader_args = {
-        "input_strategy": batch_reader_val,
-        "output_strategy": batch_reader_val,
-        "shuffle": False,
-        "preprocessing_enabled": True,
-        "channel_mask": [True for _ in range(32)],
-        "num_classes": NUM_CLASSES,
-        "batch_size": HPARAMS["batch_size"],
-        "image_ordering": ImageOrdering.CHANNEL_FIRST,
-        "type": [FileType.MULTICHANNEL, FileType.MULTICHANNEL],
-        "preprocessing_queue_image": val_queue,
-        "preprocessing_queue_mask": val_queue,
-    }
-
-    reader = FlowGeneratorExperimental(**reader_args)
-    val_reader = FlowGeneratorExperimental(**val_reader_args)
-    reader.set_mini_batch_size(HPARAMS["mini_batch_size"])
-    val_reader.set_mini_batch_size(HPARAMS["mini_batch_size"])
-
 
     def load_config_from_url(url: str) -> str:
         with urllib.request.urlopen(url) as f:
@@ -212,17 +103,14 @@ def main():
                 save_to_disk=True,
                 optimizer=optim,)
 
-    dino_trainer = DINOv2Trainer(
-        cfg=cfg,
-        model=Dino2ModelHandler,
-        optimizer=optim,
-        criterion=None,
-        train_loader=reader,
-        device=torch.device("cuda:0"),
-        validation_loader=val_reader,
-    )
+    Dino2ModelHandler = Dino2ModelHandler.to("cuda")
 
+    Dino2ModelHandler.prepare_for_distributed_training()
     fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
+    for param in Dino2ModelHandler.parameters():
+        if param.dtype == torch.float16:
+            param.data = param.data.to(torch.float32)
+
     # for param in Dino2ModelHandler.parameters():
     #     if param.dtype == torch.float16:
     #         param.data = param.data.to(torch.float32)
@@ -235,8 +123,6 @@ def main():
     if hasattr(model.backbone, "patch_size"):
         model.backbone.register_forward_pre_hook(lambda _, x: CenterPadding(model.backbone.patch_size)(x[0]))
     model.init_weights()
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Copy the weights from the pretrained model
     total_params = sum(p.numel() for p in model.backbone.parameters())

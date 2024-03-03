@@ -207,6 +207,7 @@ model = dict(
         drop = 0.5,
         attn_drop = 0.2, 
         drop_path=0.5,
+        multiout = True,
         in_channels=[960, 960],
         in_index=[0, 1],
         input_transform='resize_concat',

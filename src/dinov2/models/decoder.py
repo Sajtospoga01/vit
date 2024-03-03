@@ -102,7 +102,7 @@ class MultiScaleDecoder(BaseDecodeHead):
 @HEADS.register_module()
 class TransformerDecoder(BaseDecodeHead):
 
-    def __init__(self,img_size,embed_dim,decoder_embed_dim,patch_size,decoder_depth,classes,num_heads,drop,attn_drop,drop_path, resize_factors = None, **kwargs):
+    def __init__(self,img_size,embed_dim,decoder_embed_dim,patch_size,decoder_depth,classes,num_heads,drop,attn_drop,drop_path,multiout, resize_factors = None, **kwargs):
         super().__init__(**kwargs)
         self.embed_dim = embed_dim
         self.patch_size = patch_size
@@ -118,6 +118,7 @@ class TransformerDecoder(BaseDecodeHead):
         self.classes = classes
         self.cls_token = nn.Parameter(torch.randn(1, 1, embed_dim))
         self.initialize_weights()
+        self.multiout = multiout
 
     def initialize_weights(self):
         # initialization
@@ -184,6 +185,13 @@ class TransformerDecoder(BaseDecodeHead):
             Tensor: The transformed inputs
         """
         # print("inputs", [i.shape for i in inputs])
+        if self.multiout:
+            new_inputs = []
+            for (y_1, y_2) in inputs:
+                new_input = torch.cat((y_1, y_2), dim=1)
+                new_inputs.append(new_input)
+                
+            inputs = new_inputs
         
         inputs = torch.cat(inputs, dim=1)
         inputs = inputs.view(-1,self.embed_dim,self.num_patches)

@@ -30,6 +30,8 @@ from mmseg.models.losses import focal_loss
 from mmcv.runner import EvalHook, DistEvalHook
 from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
 from src.dinov2.fsdp import FSDPCheckpointer
+import numpy as np
+import random
 
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
@@ -72,6 +74,12 @@ def load_weigths_to_model(model):
     
 
 def main():
+    torch.manual_seed(0)
+    np.random.seed(0)
+    random.seed(0)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
     wandb.login()
     distributed.enable(overwrite=True)
     cfg = load_cfg()

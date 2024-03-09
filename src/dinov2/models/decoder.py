@@ -8,22 +8,36 @@ from src.vit_model.custom_layers import get_2d_sincos_pos_embed
 @HEADS.register_module()
 class MultiScaleDecoder(BaseDecodeHead):
 
-    def __init__(self, resize_factors = None, **kwargs):
+    def __init__(self,multiout=False, resize_factors = None, **kwargs):
         super().__init__(**kwargs)
         # assert self.in_channels == self.channels
-        self.bn = nn.SyncBatchNorm(384)
+        self.bn = nn.SyncBatchNorm(120)
         self.resize_factors = resize_factors
-
+        self.multiout = multiout
         in_out = [
-            [768, 384],
-            [384, 192],
-            [192, 96],
+            [960, 480],
+            [480, 240],
+            [240, 120],
         ]
 
         self.deconv_layers = nn.ModuleList([
-                nn.ConvTranspose2d(in_out[i][0],in_out[i][1], kernel_size=3, stride=2)
+                nn.Sequential(
+                    nn.ConvTranspose2d(in_out[i][0],in_out[i][1], kernel_size=3, stride=2,padding=1),
+                    nn.BatchNorm2d(in_out[i][1]),
+                    nn.ReLU(inplace=True),
+                    nn.Conv2d(in_out[i][1],in_out[i][1]//2, kernel_size=3, stride=1,padding=1),
+                    nn.BatchNorm2d(in_out[i][1]//2),
+                    
+                )
                 for i in range(3)
         ])
+
+        self.conv_layers = nn.ModuleList([
+            nn.ConvTranspose2d(960, in_out[i][1]//2 , kernel_size=3, stride = 2**(i+1),padding=1)
+            for i in range(3)
+        ])
+
+        
 
     def _forward_feature(self, inputs):
         """Forward function for feature maps before classifying each pixel with
@@ -50,46 +64,22 @@ class MultiScaleDecoder(BaseDecodeHead):
         Returns:
             Tensor: The transformed inputs
         """
-        # print("inputs", [i.shape for i in inputs])
 
-        if self.input_transform == "resize_concat":
-            # accept lists (for cls token)
-            input_list = []
-            for x in inputs:
-                if isinstance(x, list):
-                    input_list.extend(x)
-                else:
-                    input_list.append(x)
-            inputs = input_list
-            # an image descriptor can be a local descriptor with resolution 1x1
-            for i, x in enumerate(inputs):
-                if len(x.shape) == 2:
-                    inputs[i] = x[:, :, None, None]
-            # select indices
-            inputs = [inputs[i] for i in self.in_index]
-            # Resizing shenanigans
-            # print("before", *(x.shape for x in inputs))
-            # print("resize_factors", self.resize_factors)
+        if self.multiout:
+            new_inputs = []
+            for (y_1, y_2) in inputs:
+                new_input = torch.cat((y_1, y_2), dim=1)
+                new_inputs.append(new_input)
+                
+            inputs = new_inputs
+        
 
+        x = inputs.pop(0)
 
-            upsampled_inputs = []
-
-            for input in inputs:
-                for deconv_layer in self.deconv_layers:
-                    input = deconv_layer(input)
-                upsampled_inputs.append(input)
-            
-            
-
-            
-            inputs = torch.cat(upsampled_inputs, dim=1)
-
-        elif self.input_transform == "multiple_select":
-            inputs = [inputs[i] for i in self.in_index]
-        else:
-            inputs = inputs[self.in_index]
-
-        return inputs
+        for block,new_input,conv in zip(self.deconv_layers, inputs,self.conv_layers):
+            x = block(x)
+            x = torch.cat([x , conv(new_input)],dim=1)
+        return x
 
     def forward(self, inputs):
         """Forward function."""

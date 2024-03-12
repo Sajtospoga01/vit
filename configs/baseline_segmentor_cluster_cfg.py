@@ -51,9 +51,9 @@ data = dict(
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
-                img_scale=(224*4, 224),
+                img_scale=(256, 64),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(224, 224), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             # dict(type='PhotoMetricDistortion'),
             dict(

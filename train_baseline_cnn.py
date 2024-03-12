@@ -10,6 +10,14 @@ from mmcv.runner import load_checkpoint,build_runner
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import EvalHook
 import mmcv
+import src.dinov2.eval.dataloader
+import src.dinov2.eval.optimizers 
+from src.dinov2.models import decoder
+from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
+from src.dinov2.models.decoder import ResNetUNetDecoder
+from src.dinov2.eval.segmentation_m2f.models import segmentors
+import src.dinov2.eval.segmentation.hooks
+from mmcv.runner import EvalHook, DistEvalHook
 
 def main():
     pass
@@ -23,13 +31,10 @@ if __name__ == "__main__":
 
     config_file = 'configs/baseline_segmentor_cluster_cfg.py' 
     config = load_config_from_file(config_file)
-    config_file = mmcv.Config.fromstring(config,file_format = 'py')
+    config_file = mmcv.Config.fromstring(config,file_format = '.py')
     logger = get_logger("mmcv")
     # Model initialization with checkpoint loading
-    model = build_segmentor(config_file, 
-                            train_cfg=None, # Assuming you don't want to train immediately
-                            test_cfg=config_file.test_cfg, 
-                            init_cfg=dict(type='Pretrained', checkpoint='checkpoints/deeplabv3plus/checkpoint.pth')) 
+    model = build_segmentor(config_file.model)
 
     # Dataset and dataloader initialization
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -82,7 +87,7 @@ if __name__ == "__main__":
         )
     )
 
-    eval_hook = EvalHook(eval_data_loader,by_epoch = False, interval = config_file.evaluation.interval,save_best = 'mIoU', metric = config_file.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
+    eval_hook = EvalHook(eval_data_loader,by_epoch = False, interval = config_file.evaluation.interval,save_best = 'mIoU', metric = config_file.evaluation.metric, pre_eval = config_file.evaluation.pre_eval)
 
     runner.register_training_hooks(
         lr_config=config_file.lr_config,

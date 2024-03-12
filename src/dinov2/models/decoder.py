@@ -311,3 +311,43 @@ class HSIBNHead(BaseDecodeHead):
         output = self.cls_seg(output)
         # print("output after cls", output.shape)
         return output
+
+@HEADS.register_module()
+class ResNetUNetDecoder(BaseDecodeHead):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+
+        # Upsampling Blocks (adjust channels as needed based on ResNet50 output)
+        self.upconv7 = self._make_upconv_block(2048, 1024)
+        self.upconv6 = self._make_upconv_block(2048, 512)
+        self.upconv5 = self._make_upconv_block(1024, 256)
+        self.upconv4 = self._make_upconv_block(512, 64)
+        self.upconv3 = self._make_upconv_block(64, 32)
+
+
+        # Final Convolution
+        self.final_conv = nn.Conv2d(32, num_classes, kernel_size=1)
+
+    def _make_upconv_block(self, in_channels, out_channels):
+        return nn.Sequential(
+            nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2),
+            nn.ReLU(inplace=True)
+        )
+
+    def forward(self, inputs):
+        # x is the output from the ResNet50 encoder
+        x = inputs[0]
+        # Skip connections (adjust indices based on ResNet50 layers)
+        x = self.upconv7(x)
+        x = torch.cat([x, inputs[1]], dim = 1)
+        x = self.upconv6(x)
+        x = torch.cat([x, inputs[2]], dim = 1)
+        x = self.upconv5(x)
+        x = torch.cat([x, inputs[3]], dim = 1)
+        x = self.upconv4(x)
+        x = self.upconv3(x)
+
+        out = self.cls_seg(x)
+        return out
+    
+        

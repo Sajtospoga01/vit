@@ -55,6 +55,7 @@ data = dict(
                 ratio_range=(1.0, 3.0)),
             dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
+            dict(type='CastToFloat32'),
             # dict(type='PhotoMetricDistortion'),
             # dict(
             #     type='HSINormalize',

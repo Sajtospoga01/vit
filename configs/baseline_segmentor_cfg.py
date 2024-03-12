@@ -1,5 +1,5 @@
-dataset_type = 'ADE20KDataset'
-data_root = '/checkpoint/dino/datasets/ADE20kChallengeData2016'
+dataset_type = 'WHU_OHS'
+data_root = '/nfs/datasets/new_dataset/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (64, 64)
@@ -39,7 +39,7 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=1,
+    samples_per_gpu=16,
     workers_per_gpu=1,
     train=dict(
         type='WHU_OHS',
@@ -120,10 +120,10 @@ data = dict(
                 ])
         ]),
     test=dict(
-        type='ADE20KDataset',
-        data_root='/checkpoint/dino/datasets/ADE20kChallengeData2016',
-        img_dir='images/validation',
-        ann_dir='annotations/validation',
+        type='WHU_OHS',
+        data_root='/nfs/datasets/new_dataset/',
+        img_dir='images/test',
+        ann_dir='annotations/test',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(
@@ -147,7 +147,7 @@ log_config = dict(
     interval=50, hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
         dict(
-            type='WandbLoggerHook',  # Enables logging to Weights & Biases
+            type='MMSegWandbHook',  # Enables logging to Weights & Biases
             init_kwargs=dict(
                 project='vit-dino',  # Name of the W&B project
                 # config=dict(your_config_dict),  # Optional: log model configuration
@@ -155,7 +155,10 @@ log_config = dict(
             ),
 
             interval=10,  # Log metrics every 10 iterations
-            log_artifact=True,  # If True, log artifacts like checkpoints
+            # log_artifact=True,  # If True, log artifacts like checkpoints
+            log_checkpoint=True,
+            log_checkpoint_metadata=True,
+            num_eval_images = 10,
             # ... other WandbLoggerHook arguments
         ),
         ])
@@ -166,7 +169,7 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 optimizer = dict(
-    type='AdamW', lr=0.001, weight_decay=0.0001, betas=(0.9, 0.999))
+    type='AdamW', lr=0.0001, weight_decay=0.001, betas=(0.9, 0.999))
 optimizer_config = dict(
     type='DistOptimizerHook',
     update_interval=1,
@@ -182,8 +185,8 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=10000)
-checkpoint_config = dict(by_epoch=False, interval=10000)
+runner = dict(type='IterBasedRunner', max_iters=40000)
+checkpoint_config = dict(by_epoch=False, interval=40000)
 evaluation = dict(interval=1001, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
@@ -191,61 +194,23 @@ norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
     pretrained=None,
-    backbone=dict(type='DinoVisionTransformer', out_indices=[8,9,10, 11]),
+    backbone=dict(type='ResNet', depth=50,in_channels=32,),
     decode_head=dict(
-        type='MultiScaleDecoder',
-        multiout = True,
-        in_channels=[960,960,960, 960],
-        in_index=[0, 1,2,3],
-        input_transform='resize_concat',
-        channels=120,
-        dropout_ratio=0,
+        type='FCNHead',
+        in_channels=2048,
+  
+
+        channels=24,
+        dropout_ratio=0.4,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
-        align_corners=False,
-        loss_decode=dict(type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0), 
-        ),
+
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
+    ),
     
-
-
-        # decode_head=dict(
-        # type='TransformerDecoder',
-        # img_size = (64,64),
-        # embed_dim = 960 * 2,
-        # decoder_embed_dim = 768 * 1,
-        # patch_size = 8,
-        # decoder_depth = 6,
-        # classes = 128,
-        # num_heads=8,
-        # drop = 0.5,
-        # attn_drop = 0.2, 
-        # drop_path=0.5,
-        # multiout = True,
-        # in_channels=[960, 960],
-        # in_index=[0, 1],
-        # input_transform='resize_concat',
-        # channels=128,
-        # dropout_ratio=0,
-        # num_classes=24,
-        # norm_cfg=dict(type='SyncBN', requires_grad=True),
-        # align_corners=False,
-        # loss_decode=dict(type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0), 
-        # ),
-    # decode_head=dict(
-    #     type='BNHead',
-    #     multiout = True,
-    #     in_channels=[960, 960],
-    #     in_index=[0, 1],
-    #     input_transform='resize_concat',
-    #     channels=1920,
-    #     dropout_ratio=0.4,
-    #     num_classes=24,
-    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
-    #     align_corners=False,
-    #     loss_decode=dict(
-    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
-
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
+
 auto_resume = True
 gpu_ids = range(0, 8)
-work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'  
+work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'

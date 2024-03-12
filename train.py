@@ -96,7 +96,7 @@ class Tokenizer(nn.Module):
 
     def forward(self, x, mask=None):
         token = self.tokenize(x)
-        if not mask is None:
+        if not mask is None:    
             token = token[:, mask]
         return token
 

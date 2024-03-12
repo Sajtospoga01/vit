@@ -9,6 +9,7 @@ from mmseg.core.builder import build_optimizer
 from mmcv.runner import load_checkpoint,build_runner
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import EvalHook
+import mmcv
 
 def main():
     pass
@@ -21,7 +22,8 @@ if __name__ == "__main__":
     wandb.login()
 
     config_file = 'configs/baseline_segmentor_cluster_cfg.py' 
-
+    config = load_config_from_file(config_file)
+    config_file = mmcv.Config.fromstring(config,file_format = 'py')
     logger = get_logger("mmcv")
     # Model initialization with checkpoint loading
     model = build_segmentor(config_file, 

@@ -180,6 +180,20 @@ class HSINormalize(object):
         repr_str = self.__class__.__name__
         repr_str += f'(mean={list(self.mean)}, std={list(self.std)})'
         return repr_str
+    
+
+@PIPELINES.register_module()
+class RepositionData(object):
+    def __call__(self, results):
+        results['img'] = results['img'].astype(np.float32)
+        results['img'] = results['img'] * 256
+
+        results['img'] = results['img'] - 32768
+        results['img'] = results['img']/10000
+        return results
+
+    def __repr__(self):
+        return self.__class__.__name__
 
 @PIPELINES.register_module()
 class CastToFloat32(object):

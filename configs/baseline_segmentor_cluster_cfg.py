@@ -55,7 +55,7 @@ data = dict(
                 ratio_range=(1.0, 3.0)),
             dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
-            dict(type='RepositionData')
+            dict(type='RepositionData'),
             # dict(type='PhotoMetricDistortion'),
             # dict(
             #     type='HSINormalize',
@@ -96,7 +96,7 @@ data = dict(
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
                     dict(type='RandomFlip'),
-                    dict(type='RepositionData')
+                    dict(type='RepositionData'),
                     # dict(
                     #     type='HSINormalize',
                     #     mean=[  

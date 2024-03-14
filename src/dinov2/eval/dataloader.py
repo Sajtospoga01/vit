@@ -186,10 +186,7 @@ class HSINormalize(object):
 class RepositionData(object):
     def __call__(self, results):
         results['img'] = results['img'].astype(np.float32)
-        results['img'] = results['img'] * 256
-
-        results['img'] = results['img'] - 32768
-        results['img'] = results['img']/10000
+        results['img'] = results['img'] / 10000.0
         return results
 
     def __repr__(self):

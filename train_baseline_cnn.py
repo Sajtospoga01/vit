@@ -53,7 +53,7 @@ if __name__ == "__main__":
     data_loaders = [
         build_dataloader(
             ds,
-            samples_per_gpu = 8,
+            samples_per_gpu = 4,
             workers_per_gpu = 1,
             seed = 42,
             drop_last = True,

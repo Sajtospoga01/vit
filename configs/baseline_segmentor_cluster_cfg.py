@@ -90,7 +90,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 512),
+                img_scale=(2048, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -235,7 +235,7 @@ model = dict(
         align_corners=False,
         loss_decode=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4)),
-    test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(32, 32)))
 
 auto_resume = True
 gpu_ids = range(0, 8)

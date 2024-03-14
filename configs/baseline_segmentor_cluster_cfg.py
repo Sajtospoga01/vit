@@ -161,6 +161,7 @@ log_config = dict(
             log_checkpoint=True,
             log_checkpoint_metadata=True,
             num_eval_images = 10,
+
             # ... other WandbLoggerHook arguments
         ),
         ])
@@ -216,7 +217,7 @@ model = dict(
         dilations=(1, 12, 24, 36),
         c1_in_channels=256,
         c1_channels=48,
-        dropout_ratio=0.3,
+        dropout_ratio=0.2,
         num_classes=25,
         norm_cfg=norm_cfg,
         align_corners=False,
@@ -229,7 +230,7 @@ model = dict(
         channels=256,
         num_convs=1,
         concat_input=False,
-        dropout_ratio=0.3,
+        dropout_ratio=0.2,
         num_classes=25,
         norm_cfg=norm_cfg,
         align_corners=False,

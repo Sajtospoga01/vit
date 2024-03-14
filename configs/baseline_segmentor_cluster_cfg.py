@@ -43,7 +43,7 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type='WHU_OHS',
-        data_root='/nfs/datasets/new_dataset/',
+        data_root='/nfs/datasets/full_data/full/',
         img_dir='images/train',
         ann_dir='annotations/train',
         pipeline=[
@@ -51,9 +51,9 @@ data = dict(
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
-                img_scale=(256, 64),
+                img_scale=(2048, 512),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             dict(type='RepositionData'),
             # dict(type='PhotoMetricDistortion'),
@@ -77,20 +77,20 @@ data = dict(
             #         33.27907802, 32.90732107
             #         ],
             #     ),
-            dict(type='Pad', size=(64, 64), pad_val=0, seg_pad_val=255),
+            dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
     val=dict(
         type='WHU_OHS',
-        data_root='/nfs/datasets/new_dataset/',
+        data_root='/nfs/datasets/full_data/full/',
         img_dir='images/validate',
         ann_dir='annotations/validate',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(256, 64),
+                img_scale=(99999999, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -123,14 +123,14 @@ data = dict(
         ]),
     test=dict(
         type='WHU_OHS',
-        data_root='/nfs/datasets/new_dataset/',
+        data_root='/nfs/datasets/full_data/full/',
         img_dir='images/test',
         ann_dir='annotations/test',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 640),
+                img_scale=(99999999, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -187,7 +187,7 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=80000)
+runner = dict(type='IterBasedRunner', max_iters=40000)
 checkpoint_config = dict(by_epoch=False, interval=40000,out_dir='/nfs/segmentor/checkpoints')
 evaluation = dict(interval=1001, metric='mIoU', pre_eval=True)
 fp16 = None

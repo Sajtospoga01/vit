@@ -51,9 +51,9 @@ data = dict(
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
-                img_scale=(2048, 512),
+                img_scale=(2048, 224),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(224, 224), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             dict(type='RepositionData'),
             # dict(type='PhotoMetricDistortion'),
@@ -77,7 +77,7 @@ data = dict(
             #         33.27907802, 32.90732107
             #         ],
             #     ),
-            dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
+            dict(type='Pad', size=(224, 224), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
@@ -90,7 +90,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(2048, 512),
+                img_scale=(2048, 224),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -130,7 +130,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 512),
+                img_scale=(99999999, 224),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -236,7 +236,7 @@ model = dict(
         align_corners=False,
         loss_decode=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4)),
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(32, 32)))
+    test_cfg=dict(mode='slide', crop_size=(224, 224), stride=(32, 32)))
 
 auto_resume = True
 gpu_ids = range(0, 8)

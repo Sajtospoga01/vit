@@ -189,8 +189,8 @@ lr_config = dict(
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=40000)
-checkpoint_config = dict(by_epoch=False, interval=5000,out_dir='/nfs/segmentor/checkpoints')
-evaluation = dict(interval=9999, metric='mIoU', pre_eval=True)
+checkpoint_config = dict(by_epoch=False, interval=40000,out_dir='/nfs/segmentor/checkpoints')
+evaluation = dict(interval=80000, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)
@@ -235,8 +235,8 @@ model = dict(
         norm_cfg=norm_cfg,
         align_corners=False,
         loss_decode=dict(
-            type='DiceLossCorrect', use_sigmoid=False, loss_weight=0.4)),
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(32, 32)))
+            type='DiceLossCorrect', use_sigmoid=False, loss_weight=0.2)),
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(256, 256)))
 
 auto_resume = True
 gpu_ids = range(0, 8)

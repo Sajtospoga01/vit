@@ -12,7 +12,7 @@ def build_model(args, only_teacher=False, img_size=64, model_class = ViT):
     args.arch = args.arch.removesuffix("_memeff")
     if "vit" in args.arch:
         vit_kwargs = dict(
-            img_size=img_size,
+            img_size=args.im_size,
             patch_size=args.patch_size,
             init_values=args.layerscale,
             ffn_layer=args.ffn_layer,

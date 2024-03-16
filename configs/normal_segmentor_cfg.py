@@ -2,7 +2,7 @@ dataset_type = 'ADE20KDataset'
 data_root = '/checkpoint/dino/datasets/ADE20kChallengeData2016'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size = (64, 64)
+crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=True),
@@ -51,9 +51,9 @@ data = dict(
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
-                img_scale=(256, 64),
+                img_scale=(2048, 512),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             # dict(type='PhotoMetricDistortion'),
             dict(
@@ -76,7 +76,7 @@ data = dict(
                     33.27907802, 32.90732107
                     ],
                 ),
-            dict(type='Pad', size=(64, 64), pad_val=0, seg_pad_val=255),
+            dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
@@ -89,7 +89,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(9999999, 64),
+                img_scale=(9999999, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -182,7 +182,7 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=10000)
+runner = dict(type='IterBasedRunner', max_iters=100)
 checkpoint_config = dict(by_epoch=False, interval=10000)
 evaluation = dict(interval=1001, metric='mIoU', pre_eval=True)
 fp16 = None
@@ -191,20 +191,20 @@ norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
     pretrained=None,
-    backbone=dict(type='DinoVisionTransformer', out_indices=[8,9,10, 11]),
-    decode_head=dict(
-        type='MultiScaleDecoder',
-        multiout = True,
-        in_channels=[960,960,960, 960],
-        in_index=[0, 1,2,3],
-        input_transform='resize_concat',
-        channels=120,
-        dropout_ratio=0,
-        num_classes=24,
-        norm_cfg=dict(type='SyncBN', requires_grad=True),
-        align_corners=False,
-        loss_decode=dict(type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0), 
-        ),
+    backbone=dict(type='DinoVisionTransformer', out_indices=[11]),
+    # decode_head=dict(
+    #     type='MultiScaleDecoder',
+    #     # multiout = True,
+    #     in_channels=[768,768,768, 768],
+    #     in_index=[0, 1,2,3],
+    #     input_transform='resize_concat',
+    #     channels=120,
+    #     dropout_ratio=0,
+    #     num_classes=24,
+    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
+    #     align_corners=False,
+    #     loss_decode=dict(type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0), 
+    #     ),
     
 
 
@@ -233,19 +233,31 @@ model = dict(
         # ),
     # decode_head=dict(
     #     type='BNHead',
-    #     multiout = True,
-    #     in_channels=[960, 960],
+    #     # multiout = True,
+    #     in_channels=[768, 768],
     #     in_index=[0, 1],
     #     input_transform='resize_concat',
-    #     channels=1920,
+    #     channels=1536,
     #     dropout_ratio=0.4,
     #     num_classes=24,
     #     norm_cfg=dict(type='SyncBN', requires_grad=True),
     #     align_corners=False,
     #     loss_decode=dict(
     #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+    decode_head=dict(
+        type='SegmenterMaskTransformerHead',
+        in_channels=768,
+        channels=768,
+        num_layers=2,
+        num_heads=12,
+        num_classes=24,
+        embed_dims=768,
+        dropout_ratio=0.0,
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
+    ),
 
-    test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)
 work_dir = '/checkpoint/dino/evaluations/segmentation/dinov2_vitg14_ade20k_ms'  

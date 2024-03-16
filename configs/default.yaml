@@ -140,10 +140,10 @@ teacher:
 
 io:
   input_size:
-    - 64
-    - 64
+    - 512
+    - 512
   bands: 32
   output_size:
-    - 64
-    - 64
+    - 512
+    - 512
   num_classes: NUM_CLASSES

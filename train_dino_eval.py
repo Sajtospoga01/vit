@@ -151,7 +151,7 @@ def main():
 
 
     Dino2ModelHandler = SSLMetaArch(cfg)
-    load_weigths_to_model(Dino2ModelHandler,"./dinov2_checkpoint.pth")
+    load_weigths_to_model(Dino2ModelHandler,"/nfs/dinov2_checkpoint.pth")
     total_params = sum(p.numel() for p in Dino2ModelHandler.parameters())
     print(f'{total_params:,} total parameters.')
     print(f"Separate sizes:\n\tTeacher: {sum(p.numel() for p in Dino2ModelHandler.teacher.parameters()):,}\n\tStudent: {sum(p.numel() for p in Dino2ModelHandler.student.parameters()):,}")

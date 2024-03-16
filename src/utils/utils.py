@@ -414,7 +414,7 @@ class MaybeToTensor:
 
 
 def load_cfg():
-    return OmegaConf.load("configs/default_hsi.yaml")
+    return OmegaConf.load("configs/default_eval.yaml")
 
 
 

@@ -157,7 +157,8 @@ class DINOv2Trainer():
 
         # Forward pass
         self.optimizer.zero_grad(set_to_none=True)
-        X = torch.Tensor(X).to(self.device)
+        X = X.data[0]
+        X = X.to(self.device)
         X = self.transform(X)
         X = self.collate_fn(X)
         loss_dict = self.model.forward_backward(X, teacher_temp = teacher_temp)
@@ -234,10 +235,13 @@ class DINOv2Trainer():
                 bar_format="{percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{rate_fmt}{postfix}]{desc}",
             )
 
-            for i,(X,y) in enumerate(tqdm_instance):
+            for i,data in enumerate(tqdm_instance):
                 # break
                 for callback in callbacks:
                     callback.on_batch_stairt()
+
+                X = data['img']
+                y = data['gt_semantic_seg']
 
                 iter = epoch * len(self.train_loader) + i
                 self.__train_step(X,y,iter)

@@ -252,6 +252,8 @@ class DINOv2Trainer():
 
                 for callback in callbacks:
                     callback.on_batch_end()
+            
+
 
             logs = {
                 "loss": self.loss_metric.compute(),
@@ -268,6 +270,13 @@ class DINOv2Trainer():
         
             for callback in callbacks:
                 callback.on_epoch_end(epoch,logs)
+            
+            if epoch == 3:
+                print("Unfreezing layers")
+                for param in self.model.parameters():
+                    param.requires_grad = True
+                  
+        
 
         for callback in callbacks:
             callback.on_train_end()

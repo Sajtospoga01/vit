@@ -5,7 +5,7 @@ img_norm_cfg = dict(
 crop_size = (64, 64)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', reduce_zero_label=True),
+    dict(type='LoadAnnotations', reduce_zero_label=False),
     dict(type='Resize', img_scale=(99999999, 640), ratio_range=(1.0, 3.0)),
     dict(type='RandomCrop', crop_size=(640, 640), cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
@@ -188,9 +188,9 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=5000)
+runner = dict(type='IterBasedRunner', max_iters=40000)
 checkpoint_config = dict(by_epoch=False, interval=5000,out_dir='/nfs/segmentor/checkpoints')
-evaluation = dict(interval=4999, metric='mIoU', pre_eval=True)
+evaluation = dict(interval=9999, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)

@@ -5,7 +5,7 @@ img_norm_cfg = dict(
 crop_size = (64, 64)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', reduce_zero_label=False),
+    dict(type='LoadAnnotations', reduce_zero_label=True),
     dict(type='Resize', img_scale=(99999999, 640), ratio_range=(1.0, 3.0)),
     dict(type='RandomCrop', crop_size=(640, 640), cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
@@ -218,7 +218,7 @@ model = dict(
         c1_in_channels=256,
         c1_channels=48,
         dropout_ratio=0.2,
-        num_classes=25,
+        num_classes=24,
         norm_cfg=norm_cfg,
         align_corners=False,
         loss_decode=dict(
@@ -231,7 +231,7 @@ model = dict(
         num_convs=1,
         concat_input=False,
         dropout_ratio=0.2,
-        num_classes=25,
+        num_classes=24,
         norm_cfg=norm_cfg,
         align_corners=False,
         loss_decode=dict(

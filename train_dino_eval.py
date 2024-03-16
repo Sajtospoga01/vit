@@ -121,7 +121,7 @@ def main():
                 type='WHU_OHS',
                 data_root=TRAINING_DATA_PATH,
                 img_dir='images/train',
-                ann_dir='images/validate/',
+                ann_dir='annotations/train/',
                         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(type='LoadAnnotations', reduce_zero_label=True),

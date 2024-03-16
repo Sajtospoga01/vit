@@ -18,6 +18,7 @@ from src.dinov2.models.decoder import ResNetUNetDecoder
 from src.dinov2.eval.segmentation_m2f.models import segmentors
 import src.dinov2.eval.segmentation.hooks
 from mmcv.runner import EvalHook, DistEvalHook
+from src.dinov2.eval.dice_loss import DiceLossCorrect
 
 def main():
     pass

@@ -52,6 +52,7 @@ data = dict(
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(type='LoadAnnotations', reduce_zero_label=True),
+            dict(type='RepositionData'),
             dict(
                 type='Resize',
                 img_scale=(2048, 512),
@@ -59,6 +60,7 @@ data = dict(
             dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             # dict(type='PhotoMetricDistortion'),
+            
             dict(
                 type='HSINormalize',
                 mean=[  
@@ -99,8 +101,10 @@ data = dict(
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
+                     dict(type='RepositionData'),
                     dict(type='Resize', keep_ratio=True),
                     dict(type='RandomFlip'),
+                    
                     dict(
                         type='HSINormalize',
                         mean=[  

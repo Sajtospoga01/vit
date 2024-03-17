@@ -252,7 +252,7 @@ model = dict(
         num_heads=12,
         num_classes=24,
         embed_dims=768,
-        dropout_ratio=0.5,
+        dropout_ratio=0.0,
         loss_decode=dict(
             type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
     ),

@@ -199,7 +199,7 @@ model = dict(
 
     backbone=dict(
         type='ResNetV1c',
-        depth=50,
+        depth=152,
         num_stages=4,
         in_channels=32,
         out_indices=(0, 1, 2, 3),

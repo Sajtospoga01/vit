@@ -271,7 +271,8 @@ model = dict(
         embed_dims=768,
         dropout_ratio=0.4,
         loss_decode=dict(
-            type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
+            # type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
     ),
 
     test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(256, 256)))

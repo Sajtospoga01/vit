@@ -2,7 +2,7 @@ dataset_type = 'WHU_OHS'
 data_root = '/nfs/datasets/new_dataset/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size = (64, 64)
+crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=False),
@@ -51,9 +51,9 @@ data = dict(
             dict(type='LoadAnnotations', reduce_zero_label=True),
             dict(
                 type='Resize',
-                img_scale=(256, 64),
+                img_scale=(2048, 512),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             # dict(type='PhotoMetricDistortion'),
             dict(
@@ -76,7 +76,7 @@ data = dict(
                     33.27907802, 32.90732107
                     ],
                 ),
-            dict(type='Pad', size=(64, 64), pad_val=0, seg_pad_val=255),
+            dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
@@ -89,7 +89,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(9999999, 64),
+                img_scale=(9999999, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -128,7 +128,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 640),
+                img_scale=(99999999, 512),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -258,10 +258,10 @@ model = dict(
         embed_dims=768,
         dropout_ratio=0.0,
         loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
+            type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
     ),
 
-    test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(256, 256)))
 auto_resume = True
 gpu_ids = range(0, 8)
 work_dir = '/nfs/'

@@ -32,6 +32,7 @@ from src.dinov2.eval.patchwise_loss import PatchWiseCrossEntropyLoss
 from src.dinov2.fsdp import FSDPCheckpointer
 import numpy as np
 import random
+from src.dinov2.eval.dice_loss import DiceLossCorrect
 
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):

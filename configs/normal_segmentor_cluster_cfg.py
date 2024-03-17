@@ -199,7 +199,7 @@ lr_config = dict(
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=500)
-checkpoint_config = dict(by_epoch=False, interval=4999,out_dir='/nfs/segmentor/checkpoints')
+checkpoint_config = dict(by_epoch=False, interval=500,out_dir='/nfs/segmentor/checkpoints')
 evaluation = dict(interval=5000, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True

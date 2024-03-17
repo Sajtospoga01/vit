@@ -185,31 +185,31 @@ lr_config = dict(
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=40000)
-checkpoint_config = dict(by_epoch=False, interval=40000,out_dir='/nfs/segmentor/checkpoints')
-evaluation = dict(interval=1001, metric='mIoU', pre_eval=True)
+runner = dict(type='IterBasedRunner', max_iters=5000)
+checkpoint_config = dict(by_epoch=False, interval=4999,out_dir='/nfs/segmentor/checkpoints')
+evaluation = dict(interval=5000, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
     pretrained=None,
-    backbone=dict(type='DinoVisionTransformer', out_indices=[8,9,10, 11]),
-    decode_head=dict(
-        type='MultiScaleDecoder',
-        multiout = True,
-        in_channels=[960,960,960, 960],
-        in_index=[0, 1,2,3],
-        input_transform='resize_concat',
-        channels=120,
-        dropout_ratio=0,
-        num_classes=24,
-        norm_cfg=dict(type='SyncBN', requires_grad=True),
-        align_corners=False,
-        loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
+    backbone=dict(type='DinoVisionTransformer', out_indices=[ 11]),
+    # decode_head=dict(
+    #     type='MultiScaleDecoder',
+    #     multiout = True,
+    #     in_channels=[960,960,960, 960],
+    #     in_index=[0, 1,2,3],
+    #     input_transform='resize_concat',
+    #     channels=120,
+    #     dropout_ratio=0,
+    #     num_classes=24,
+    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
+    #     align_corners=False,
+    #     loss_decode=dict(
+    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
         
-        ),
+        # ),
     # decode_head=dict(
     #     type='TransformerDecoder',
     #     img_size = (64,64),
@@ -248,6 +248,18 @@ model = dict(
     #     loss_decode=dict(
     #         # type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
     #         type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0)),
+    decode_head=dict(
+        type='SegmenterMaskTransformerHead',
+        in_channels=768,
+        channels=768,
+        num_layers=2,
+        num_heads=12,
+        num_classes=24,
+        embed_dims=768,
+        dropout_ratio=0.0,
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
+    ),
 
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True

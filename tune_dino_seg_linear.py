@@ -84,7 +84,7 @@ def main():
     distributed.enable(overwrite=True)
     cfg = load_cfg()
     # load pretrained backbone
-    Dino2ModelHandler = SSLMetaArchHSI(cfg)
+    Dino2ModelHandler = SSLMetaArch(cfg)
     print(cfg.student.num_register_tokens)
     total_params = sum(p.numel() for p in Dino2ModelHandler.parameters())
     print(f'{total_params:,} total parameters.')

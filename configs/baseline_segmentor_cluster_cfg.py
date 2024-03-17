@@ -183,13 +183,13 @@ optimizer_config = dict(
 lr_config = dict(
     policy='poly',
     warmup='linear',
-    warmup_iters=1500,
+    warmup_iters=1000,
     warmup_ratio=1e-06,
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
-runner = dict(type='IterBasedRunner', max_iters=40000)
-checkpoint_config = dict(by_epoch=False, interval=40000,out_dir='/nfs/segmentor/checkpoints')
+runner = dict(type='IterBasedRunner', max_iters=10000)
+checkpoint_config = dict(by_epoch=False, interval=1000,out_dir='/nfs/segmentor/checkpoints')
 evaluation = dict(interval=80000, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
@@ -199,7 +199,7 @@ model = dict(
 
     backbone=dict(
         type='ResNetV1c',
-        depth=152,
+        depth=101,
         num_stages=4,
         in_channels=32,
         out_indices=(0, 1, 2, 3),

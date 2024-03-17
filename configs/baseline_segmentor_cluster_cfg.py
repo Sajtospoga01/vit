@@ -223,19 +223,19 @@ model = dict(
         align_corners=False,
         loss_decode=dict(
             type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0)),
-    auxiliary_head=dict(
-        type='FCNHead',
-        in_channels=1024,
-        in_index=2,
-        channels=256,
-        num_convs=1,
-        concat_input=False,
-        dropout_ratio=0.3,
-        num_classes=24,
-        norm_cfg=norm_cfg,
-        align_corners=False,
-        loss_decode=dict(
-            type='DiceLossCorrect', use_sigmoid=False, loss_weight=0.2)),
+    # auxiliary_head=dict(
+    #     type='FCNHead',
+    #     in_channels=1024,
+    #     in_index=2,
+    #     channels=256,
+    #     num_convs=1,
+    #     concat_input=False,
+    #     dropout_ratio=0.3,
+    #     num_classes=24,
+    #     norm_cfg=norm_cfg,
+    #     align_corners=False,
+    #     loss_decode=dict(
+    #         type='DiceLossCorrect', use_sigmoid=False, loss_weight=0.2)),
     test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(256, 256)))
 
 auto_resume = True

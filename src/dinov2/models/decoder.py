@@ -14,11 +14,20 @@ class MultiScaleDecoder(BaseDecodeHead):
         self.bn = nn.SyncBatchNorm(120)
         self.resize_factors = resize_factors
         self.multiout = multiout
-        in_out = [
-            [960, 480],
-            [480, 240],
-            [240, 120],
-        ]
+
+        if multiout:
+
+            in_out = [
+                [960, 480],
+                [480, 240],
+                [240, 120],
+            ]
+        else:
+            in_out = [
+                [768, 384],
+                [384, 192],
+                [192, 96],
+            ]
 
         self.deconv_layers = nn.ModuleList([
                 nn.Sequential(

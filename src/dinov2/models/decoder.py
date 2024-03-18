@@ -11,12 +11,11 @@ class MultiScaleDecoder(BaseDecodeHead):
     def __init__(self,multiout=False, resize_factors = None, **kwargs):
         super().__init__(**kwargs)
         # assert self.in_channels == self.channels
-        self.bn = nn.SyncBatchNorm(120)
+        
         self.resize_factors = resize_factors
         self.multiout = multiout
 
         if multiout:
-
             in_out = [
                 [960, 480],
                 [480, 240],
@@ -28,7 +27,7 @@ class MultiScaleDecoder(BaseDecodeHead):
                 [384, 192],
                 [192, 96],
             ]
-
+        self.bn = nn.SyncBatchNorm(in_out[-1][1])
         self.deconv_layers = nn.ModuleList([
                 nn.Sequential(
                     nn.ConvTranspose2d(in_out[i][0],in_out[i][1], kernel_size=3, stride=2,padding=1),
@@ -42,7 +41,7 @@ class MultiScaleDecoder(BaseDecodeHead):
         ])
 
         self.conv_layers = nn.ModuleList([
-            nn.ConvTranspose2d(960, in_out[i][1]//2 , kernel_size=3, stride = 2**(i+1),padding=1)
+            nn.ConvTranspose2d(in_out[0][0], in_out[i][1]//2 , kernel_size=3, stride = 2**(i+1),padding=1)
             for i in range(3)
         ])
 

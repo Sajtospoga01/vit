@@ -29,6 +29,9 @@ import torch.nn as nn
 import itertools
 import torch.nn.functional as F
 import math
+from mmcv.runner import EvalHook, DistEvalHook
+
+
 NUM_CLASSES = 24
 HPARAMS = {
     'mini_batch_size': 32,
@@ -160,6 +163,8 @@ def main():
     datasets = [
         build_dataset(cfg_mmcv.data.train)
     ]
+    eval_dataset = build_dataset(cfg_mmcv.data.val)
+
 
     data_loaders = [
         build_dataloader(
@@ -171,6 +176,14 @@ def main():
             
         ) for ds in datasets
     ]
+
+    eval_data_loader = build_dataloader(
+        eval_dataset,
+        samples_per_gpu = 16,
+        workers_per_gpu = 1,
+        seed = 42,
+        drop_last = True,
+    )
     cfg_mmcv.log_config.hooks[1].init_kwargs.config = cfg_mmcv
 
     optimizer = build_optimizer(model, cfg_mmcv.optimizer)
@@ -187,20 +200,22 @@ def main():
         )
     )
 
+    eval_hook = EvalHook(eval_data_loader,by_epoch = False, interval = cfg_mmcv.evaluation.interval,save_best = 'mIoU', metric = cfg_mmcv.evaluation.metric, pre_eval = cfg_mmcv.evaluation.pre_eval)
+
+
     runner.register_training_hooks(
         lr_config=cfg_mmcv.lr_config,
         optimizer_config=cfg_mmcv.optimizer_config,
         checkpoint_config=cfg_mmcv.checkpoint_config,
         log_config=cfg_mmcv.log_config)
   
+    runner.register_hook(eval_hook)
+  
+
     runner.run(
         data_loaders=data_loaders,
         workflow=cfg_mmcv.workflow,
     )
-
-
-
-
 
 
 if __name__ == '__main__':

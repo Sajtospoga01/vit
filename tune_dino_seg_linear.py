@@ -85,7 +85,7 @@ def main():
     distributed.enable(overwrite=True)
     cfg = load_cfg()
     # load pretrained backbone
-    Dino2ModelHandler = SSLMetaArch(cfg)
+    Dino2ModelHandler = SSLMetaArchHSI(cfg)
     print(cfg.student.num_register_tokens)
     total_params = sum(p.numel() for p in Dino2ModelHandler.parameters())
     print(f'{total_params:,} total parameters.')
@@ -115,7 +115,7 @@ def main():
     Dino2ModelHandler = Dino2ModelHandler.to("cuda")
 
     Dino2ModelHandler.prepare_for_distributed_training()
-    fsdp_checkpointer.load("/nfs/model_final.rank_0.pth")
+    fsdp_checkpointer.load("/nfs/vit_pretrain/Land-Segmentation/model_final.rank_0.pth")
     for param in Dino2ModelHandler.parameters():
         param.requires_grad = False
 

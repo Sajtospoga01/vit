@@ -247,33 +247,33 @@ model = dict(
     #     loss_decode=dict(
     #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
     #     ),
-    # decode_head=dict(
-    #     type='BNHead',
-       
-    #     in_channels=[768, 768],
-    #     in_index=[0, 1],
-    #     input_transform='resize_concat',
-    #     channels=1536,
-    #     dropout_ratio=0.4,
-    #     num_classes=24,
-    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
-    #     align_corners=False,
-    #     loss_decode=dict(
-    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
-            # type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0)),
     decode_head=dict(
-        type='SegmenterMaskTransformerHead',
-        in_channels=768,
-        channels=768,
-        num_layers=2,
-        num_heads=12,
-        num_classes=24,
-        embed_dims=768,
+        type='BNHead',
+       
+        in_channels=[960,960, 960, 960],
+        in_index=[0, 1,2,3],
+        input_transform='resize_concat',
+        channels=1920,
         dropout_ratio=0.4,
+        num_classes=24,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
         loss_decode=dict(
-            # type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
-    ),
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+            # type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0)),
+    # decode_head=dict(
+    #     type='SegmenterMaskTransformerHead',
+    #     in_channels=768,
+    #     channels=768,
+    #     num_layers=2,
+    #     num_heads=12,
+    #     num_classes=24,
+    #     embed_dims=768,
+    #     dropout_ratio=0.4,
+    #     loss_decode=dict(
+    #         # type='DiceLossCorrect', use_sigmoid=False, loss_weight=1.0),
+    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
+    # ),
 
     test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True

@@ -110,6 +110,7 @@ ibot:
   head_nlayers: 3
 
 student:
+  im_size: 64
   arch: "vit_small"
   patch_size: 8
   spectral_patch_size: 2

@@ -33,6 +33,7 @@ from src.dinov2.fsdp import FSDPCheckpointer
 import numpy as np
 import random
 from src.dinov2.eval.dice_loss import DiceLossCorrect
+from omegaconf import OmegaConf
 
 class CenterPadding(torch.nn.Module):
     def __init__(self, multiple):
@@ -74,6 +75,10 @@ def load_weigths_to_model(model):
     return model    
     
 
+def load_cfg_local():
+    return OmegaConf.load("configs/default_hsi.yaml")
+
+
 def main():
     torch.manual_seed(0)
     np.random.seed(0)
@@ -83,7 +88,7 @@ def main():
 
     wandb.login()
     distributed.enable(overwrite=True)
-    cfg = load_cfg()
+    cfg = load_cfg_local()
     # load pretrained backbone
     Dino2ModelHandler = SSLMetaArchHSI(cfg)
     print(cfg.student.num_register_tokens)

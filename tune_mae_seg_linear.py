@@ -30,7 +30,7 @@ import itertools
 import torch.nn.functional as F
 import math
 from mmcv.runner import EvalHook, DistEvalHook
-
+from src.dinov2.models import decoder
 
 NUM_CLASSES = 24
 HPARAMS = {

@@ -207,22 +207,22 @@ norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
     pretrained=None,
-    backbone=dict(type='DinoVisionTransformer', out_indices=[10, 11]),
-    # decode_head=dict(
-    #     type='MultiScaleDecoder',
-    #     multiout = True,
-    #     in_channels=[960,960,960, 960],
-    #     in_index=[0, 1,2,3],
-    #     input_transform='resize_concat',
-    #     channels=120,
-    #     dropout_ratio=0,
-    #     num_classes=24,
-    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
-    #     align_corners=False,
-    #     loss_decode=dict(
-    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
+    backbone=dict(type='DinoVisionTransformer', out_indices=[8,9,10, 11]),
+    decode_head=dict(
+        type='MultiScaleDecoder',
+        # multiout = True,
+        in_channels=[768,768,768,768],
+        in_index=[0, 1,2,3],
+        input_transform='resize_concat',
+        channels=120,
+        dropout_ratio=0,
+        num_classes=24,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
         
-        # ),
+        ),
     # decode_head=dict(
     #     type='TransformerDecoder',
     #     img_size = (64,64),
@@ -247,19 +247,19 @@ model = dict(
     #     loss_decode=dict(
     #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
     #     ),
-    decode_head=dict(
-        type='BNHead',
+    # decode_head=dict(
+    #     type='BNHead',
        
-        in_channels=[768, 768],
-        in_index=[0, 1],
-        input_transform='resize_concat',
-        channels=1536,
-        dropout_ratio=0.4,
-        num_classes=24,
-        norm_cfg=dict(type='SyncBN', requires_grad=True),
-        align_corners=False,
-        loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+    #     in_channels=[768, 768],
+    #     in_index=[0, 1],
+    #     input_transform='resize_concat',
+    #     channels=1536,
+    #     dropout_ratio=0.4,
+    #     num_classes=24,
+    #     norm_cfg=dict(type='SyncBN', requires_grad=True),
+    #     align_corners=False,
+    #     loss_decode=dict(
+    #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
             # type='FocalLoss', gamma=2.0, alpha=0.55, loss_weight=1.0)),
     # decode_head=dict(
     #     type='SegmenterMaskTransformerHead',

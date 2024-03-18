@@ -253,7 +253,7 @@ model = dict(
         in_channels=[960,960, 960, 960],
         in_index=[0, 1,2,3],
         input_transform='resize_concat',
-        channels=1920,
+        channels=3840,
         dropout_ratio=0.4,
         num_classes=24,
         norm_cfg=dict(type='SyncBN', requires_grad=True),

@@ -249,7 +249,7 @@ model = dict(
     #     ),
     decode_head=dict(
         type='BNHead',
-       
+        multiout = True,
         in_channels=[960,960, 960, 960],
         in_index=[0, 1,2,3],
         input_transform='resize_concat',

@@ -43,16 +43,16 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type='WHU_OHS',
-        # data_root='/nfs/datasets/new_dataset/',
-        # img_dir='images/train',
-        # ann_dir='annotations/train',
-        data_root='/nfs/datasets/full_data/full/',
+        data_root='/nfs/datasets/new_dataset/',
         img_dir='images/train',
         ann_dir='annotations/train',
+        # data_root='/nfs/datasets/full_data/full/',
+        # img_dir='images/train',
+        # ann_dir='annotations/train',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(type='LoadAnnotations', reduce_zero_label=True),
-            dict(type='RepositionData'),
+            # dict(type='RepositionData'),
             dict(
                 type='Resize',
                 img_scale=(2048, 512),
@@ -87,12 +87,12 @@ data = dict(
         ]),
     val=dict(
         type='WHU_OHS',
-        # data_root='/nfs/datasets/new_dataset/',
-        # img_dir='images/validate',
-        # ann_dir='annotations/validate',
-        data_root='/nfs/datasets/full_data/full/',
+        data_root='/nfs/datasets/new_dataset/',
         img_dir='images/validate',
         ann_dir='annotations/validate',
+        # data_root='/nfs/datasets/full_data/full/',
+        # img_dir='images/validate',
+        # ann_dir='annotations/validate',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(
@@ -101,7 +101,7 @@ data = dict(
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
-                     dict(type='RepositionData'),
+                    #  dict(type='RepositionData'),
                     dict(type='Resize', keep_ratio=True),
                     dict(type='RandomFlip'),
                     
@@ -131,12 +131,12 @@ data = dict(
         ]),
     test=dict(
         type='WHU_OHS',
-        # data_root='/nfs/datasets/new_dataset/',
-        # img_dir='images/test',
-        # ann_dir='annotations/test',
-        data_root='/nfs/datasets/full_data/full/',
+        data_root='/nfs/datasets/new_dataset/',
         img_dir='images/test',
         ann_dir='annotations/test',
+        # data_root='/nfs/datasets/full_data/full/',
+        # img_dir='images/test',
+        # ann_dir='annotations/test',
         pipeline=[
             dict(type='MyLoadImageFromFile'),
             dict(

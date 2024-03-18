@@ -72,6 +72,8 @@ class MultiScaleDecoder(BaseDecodeHead):
                 new_inputs.append(new_input)
                 
             inputs = new_inputs
+        else:
+            inputs = [i for i in inputs]
         
 
         x = inputs.pop(0)

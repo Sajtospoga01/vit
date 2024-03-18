@@ -49,8 +49,8 @@ HPARAMS = {
         "patch_size": 8,
         #encoder specific params
         "embed_dim": 768,
-        # "depth": 12,
-        # "num_heads": 12,
+        "depth": 12,
+        "num_heads": 12,
         #decoder specific params
         "decoder_embed_dim":512,
         "decoder_depth": 8,
@@ -83,7 +83,7 @@ class CenterPadding(torch.nn.Module):
         output = F.pad(x, pads)
         return output
 
-DATASET_PATH = "/nfs/datasets/ne_dataset/"
+DATASET_PATH = "/nfs/datasets/new_dataset/"
 def load_weigths_to_model(model):
     # load the weights from the checkpoint into the model
     new_state_dict = model.state_dict()

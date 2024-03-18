@@ -55,9 +55,9 @@ data = dict(
             # dict(type='RepositionData'),
             dict(
                 type='Resize',
-                img_scale=(2048, 512),
+                img_scale=(256, 64),
                 ratio_range=(1.0, 3.0)),
-            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
+            dict(type='RandomCrop', crop_size=(64, 64), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5),
             # dict(type='PhotoMetricDistortion'),
             
@@ -81,7 +81,7 @@ data = dict(
                     33.27907802, 32.90732107
                     ],
                 ),
-            dict(type='Pad', size=(512, 512), pad_val=0, seg_pad_val=255),
+            dict(type='Pad', size=(64, 64), pad_val=0, seg_pad_val=255),
             dict(type='DefaultFormatBundle'),
             dict(type='Collect', keys=['img', 'gt_semantic_seg'])
         ]),
@@ -97,7 +97,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(9999999, 512),
+                img_scale=(9999999, 64),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -141,7 +141,7 @@ data = dict(
             dict(type='MyLoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(99999999, 512),
+                img_scale=(99999999, 64),
                 img_ratios=[1.0, 1.32, 1.73, 2.28, 3.0],
                 flip=True,
                 transforms=[
@@ -193,14 +193,14 @@ optimizer_config = dict(
 lr_config = dict(
     policy='poly',
     warmup='linear',
-    warmup_iters=1500,
+    warmup_iters=100,
     warmup_ratio=1e-06,
     power=1.0,
     min_lr=0.0,
     by_epoch=False)
 runner = dict(type='IterBasedRunner', max_iters=500)
 checkpoint_config = dict(by_epoch=False, interval=500,out_dir='/nfs/segmentor/checkpoints')
-evaluation = dict(interval=5000, metric='mIoU', pre_eval=True)
+evaluation = dict(interval=499, metric='mIoU', pre_eval=True)
 fp16 = None
 find_unused_parameters = True
 norm_cfg = dict(type='SyncBN', requires_grad=True)
@@ -275,7 +275,7 @@ model = dict(
     #         type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)
     # ),
 
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(256, 256)))
+    test_cfg=dict(mode='slide', crop_size=(64, 64), stride=(32, 32)))
 auto_resume = True
 gpu_ids = range(0, 8)
 work_dir = '/nfs/'

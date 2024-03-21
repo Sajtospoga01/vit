@@ -1,5 +1,4 @@
 # Land-Segmentation
-[![Gradient](https://assets.paperspace.io/img/gradient-badge.svg)](https://console.paperspace.com/t17q5l89hk/notebook/r2qjh2d2v9c9ft6?file=%2Fland_segmentation.ipynb)
 
 The project is meant to host the source code for the dissertation project on satellite remote sensing optimisation with different self-supervised pretraining methods.
 
@@ -9,12 +8,12 @@ The current pretraining methods are:
 
 Current backbones in use:
 - [x] ViT-S8 (DINOv2, MAE)
-- [ ] HSI optimized backbone
+- [x] HSI optimized backbone (Spatial spectral backbone)
 
 Current segmentation decoder networks in use:
-- [x] MS linear head (DINOv2)
-- [ ] TBD (MAE - latent space optimized decoders)
-- [ ] TBD (DINOv2 - multi-scale optimized decoders)
+- [x] Multiscale linear decoder
+- [x] Multiscale Convolutional decoder
+- [x] Segmenter transformer decoder
 
 ## Goal of the project
 The goal of the project is to implement a state of the art end-to-end training pipeline for hyper-spectral image data processing using existing state of the art methods.
@@ -26,4 +25,7 @@ In either case the encoders are frozen on the downstream training, for better co
 
 
 ## Setup
-The project runs on the nvidia cuda platform. the easiest way to run the project is through the docker file provided in the repository, which contains all the necessary dependencies for the project.
+The project runs on the nvidia cuda platform. the easiest way to build and run the project is through the docker file provided in the repository, which contains all the necessary dependencies for the project.
+> Note: in order for the project build properly the nvidia gpu is required to compile the some of the dependencies.
+
+

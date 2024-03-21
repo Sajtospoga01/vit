@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from typing import Callable, Tuple, Union, Sequence
-from src.dinov2.layers import Mlp, PatchEmbed,SwiGLUFFNFused, MemEffAttention, NestedTensorBlock as Block
+from src.dinov2.layers import Mlp, PatchEmbed,SwiGLUFFNFused,Attention, MemEffAttention, NestedTensorBlock as Block
 from functools import partial
 from torch.nn.init import trunc_normal_
 import math
@@ -90,7 +90,7 @@ class HSIViT(nn.Module):
         embed_layer=PatchEmbed,
         spectral_embed_layer=SpectralPatchEmbed,
         act_layer=nn.GELU,
-        block_fn=partial(SpatialSpectralBlock, attn_class=MemEffAttention),
+        block_fn=partial(SpatialSpectralBlock, attn_class=Attention),
         ffn_layer="mlp",
         block_chunks=1,
         num_register_tokens=0,

@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from typing import Callable, Tuple, Union, Sequence
-from src.dinov2.layers import Mlp, PatchEmbed,SwiGLUFFNFused, MemEffAttention, NestedTensorBlock as Block
+from src.dinov2.layers import Mlp, PatchEmbed,SwiGLUFFNFused, Attention,MemEffAttention, NestedTensorBlock as Block
 from functools import partial
 from torch.nn.init import trunc_normal_
 import math
@@ -63,7 +63,7 @@ def vit_base(patch_size=16, num_register_tokens=0, **kwargs):
         depth=12,
         num_heads=12,
         mlp_ratio=4,
-        block_fn=partial(Block, attn_class=MemEffAttention),
+        block_fn=partial(Block, attn_class=Attention),
         num_register_tokens=num_register_tokens,
         **kwargs,
     )
@@ -87,7 +87,7 @@ class ViT(nn.Module):
         init_values=None,  # for layerscale: None or 0 => no layerscale
         embed_layer=PatchEmbed,
         act_layer=nn.GELU,
-        block_fn=partial(Block, attn_class=MemEffAttention),
+        block_fn=partial(Block, attn_class=Attention),
         ffn_layer="mlp",
         block_chunks=1,
         num_register_tokens=0,

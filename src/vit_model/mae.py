@@ -1,3 +1,11 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# Reused code from DINOv2 repository https://github.com/FlyEgle/MAE-pytorch
+# which is licensed under apache License
+# found in the paper https://arxiv.org/abs/2111.06377
+
+# modified
+
 import torch
 from torch import nn
 

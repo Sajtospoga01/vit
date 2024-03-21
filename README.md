@@ -31,6 +31,7 @@ The project is structured in the following way:
 - src: contains the source code for the project
 - wiki: contains the documents for the project
 - root: contains the docker file, main notebooks, and main training files for the project
+- process: contains files that were used in the processing and extra analysis of the data
 
 
 ## Setup
@@ -39,6 +40,12 @@ The project runs on the nvidia cuda platform. the easiest way to build and run t
 > Note: This container is meant to be built in a compute cluster environment as part of a CD setup, such it might require changing the paths to build correctly.
 
 The container exposes the jupyter notebook on port 8888, and the tensorboard on port 6006, so it should be possible to connect to the container from the host machine, however this was never tested.
+
+In order to load weights in the weights directory has to be downloaded from the dissertation onedrive folder, which requires a university account to access (further readme provided in the folder extra information on the files):
+https://gla-my.sharepoint.com/:f:/g/personal/2575706b_student_gla_ac_uk/EhmZoHxvQrdCrisbgYtADBEB15e1SN6Q6-N_U02FFJvoxg?e=jqLEgK
+
+In order to access the datasets, it can be done in a similar way (further readme provided in the folder extra information on the files):
+https://gla-my.sharepoint.com/:f:/g/personal/2575706b_student_gla_ac_uk/Ei5TaU99a9VNjE5H-HcFNAcBbDqBAGVK6sPxOVISq7eobw?e=bMS6fm
 
 ## Running the project
 

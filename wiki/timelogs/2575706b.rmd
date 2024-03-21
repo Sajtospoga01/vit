@@ -1,0 +1,313 @@
+# Timelog
+
+* CONTRASTIVE LEARNING FOR ENHANCED FEATURE EXTRACTION IN HYPERSPECTRAL IMAGERY
+* Andras Bodrogai
+* 2575706b
+* Gerardo Aragon Camarasa
+
+## Guidance
+
+* This file contains the time log for your project. It will be submitted along with your final dissertation.
+* **YOU MUST KEEP THIS UP TO DATE AND UNDER VERSION CONTROL.**
+* This timelog should be filled out honestly, regularly (daily) and accurately. It is for *your* benefit.
+* Follow the structure provided, grouping time by weeks.  Quantise time to the half hour.
+
+## Week 1
+### 20 sept 2023
+* *3 hours* Read about vision transformer models
+
+### 21 sept 2023
+* *2 hour* Researching project goals, timeinvestment requirements, and feasibility
+
+### 22 sept 2023
+* *2 hour* Researching project goals, timeinvestment requirements, and feasibility
+
+### 25 sept 2023
+* *1 hour* Researching project goals, timeinvestment requirements, and feasibility
+
+### 26 sept 2023
+* *3 hours* Implementing a batch data reader, and writer for external storage
+
+## Week 2
+### 29 sept 2023
+* *4 hours* Researching and prototyping self-supervised training methods (MAE)
+
+### 30 sept 2023
+* *3 hours* Added visualisation of model output and, attention map
+
+### 1 oct 2023
+* *2 hours* Made dataset loader for python
+
+
+## Week 3
+### 29 sept 2023
+* *4 hours* Researching and prototyping self-supervised training methods (MAE)
+
+### 30 sept 2023
+* *3 hours* Added visualisation of model output and, attention map
+
+### 1 oct 2023
+* *2 hours* Made dataset loader for python
+
+
+## Week 4
+### 06 oct 2023
+* *5 hours* Fixing bug in S3 dataset loader
+
+### 07 oct 2023
+* *3 hours* Added visualisation of model output and, attention map passed to Weights and Biases
+* *2 hours* Added validation loop to training script
+
+### 08 oct 2023
+* *2 hours* Added masking to (MAE)
+
+### 11 oct 2023
+* *2 hours* Was fixing memory leak in WANDB logging
+
+
+## Week 5
+### 14 oct
+* *2 hours* Did data analysis on dataset. Made covariance analysis on light distribution.
+* *4 hours* Did endmember spectral analysis based on feature reflectence.
+
+### 15 oct
+* *2 hours* Did light distribution analysis in dataset.
+* *2 hours* adjusted dataset preprocessing fit to model more effectively.
+## Week 6
+### 21 oct 2023
+
+* **5 hours** Implementing masked autoencoder
+
+### 22 oct 2023
+* **7 hours** Implementing masked autoencoder
+* **2 hours** Model evaluation
+
+
+
+## Week 7
+### 28 oct 2023
+* **2 Hours** Fixing preprocessing pipeline for data reader
+* **3 Hours** Implementing MAE specific preprocessing functions (Random flip,crop with rescale, normalize)
+
+
+### 29 oct 2023
+* **1 Hours** Pretraining on RGB satellite data
+
+### 31 oct 2023
+* **3 Hours** Pretraining on HSI satellite data using PCA
+
+### 1 Nov 2023
+* **4 Hours** Doing research on possible dataset expansion, and other pretrained models.
+
+
+## Week 8
+
+No progress was done this week
+
+## Week 9
+### 9 Nov 2023
+* **5 hours** Loaded biases into model
+* **2 hours** Evaluated model
+
+### 10 Nov 2023
+* **2 hours** Made HSI adapter based on PCA
+* **2 hours** Evaluated model
+
+## Week 10
+### 16 Nov 2023
+
+* **3 hours** Implemented HSI Adapter using convolution encoder decoder into the transformer network
+* **2 hours** Evaluated model
+
+### 19 Nov 2023
+* **2 hours** Collecting image data
+* **4 hours** cutting and filtering previously used image data for dataset expansion 300K images
+
+## Week 11
+### 23 Nov 2023
+
+* **3 hours** Implemented HSI Adapter using convolution encoder decoder into the transformer network
+* **2 hours** Evaluated model
+
+### 26 Nov 2023
+* **2 hours** Collecting image data
+* **4 hours** cutting and filtering previously used image data for dataset expansion 300K images
+
+## Week 12
+
+No progress was made
+
+
+## Week 13
+
+### 8 Dec 2023
+* **24 hours** Running pretraining
+
+### 9 Dec 2023
+* **24 hours** Running pretraining
+
+
+ ## Week 17
+### 08 Jan 2024
+* *3 hours* fixing mmcv pipeline
+
+### 10 Jan 2024
+* *5 hours* fixing mmcv pipeline
+
+### 13 Jan 2024
+* *3 hours* fixing mmcv pipeline
+
+### 14 Jan 2024
+* *6 hours* fixing mmcv pipeline
+
+
+## Week 18
+### 15 Jan 2024
+* *6 hours* Building (trying to build) gpu enabled docker image
+
+### 18 Jan 2024
+* *3 hours* Building (trying to build) gpu enabled docker image
+
+### 19 Jan 2024
+* *2 hours* Building gpu enabled docker image
+
+### 20 Jan 2024
+* *2 hours* Fixing training pipeline, evaluating decoder performance
+
+### 21 Jan 2024
+* *4 hours* Adapting linear decoder for DINOv2
+
+## Week 19
+### 22 Jan 2024
+* *2 hours* Adapting linear decoder for Masked Autoencoder
+
+### 24 Jan 2024
+* *3 hours* Creating convolution decoder (multiscale)
+
+### 27 Jan 2024
+* *4 hours* Implementing transformer decoder (multiscale)
+* *1 hours* Trying different loss functions to fight class imbalance
+
+## Week 20
+### 29 Jan 2024
+* *2 hours* Implementing patchwise loss function for transformer decoder
+* *7 hours* Implementing spatial spectral encoder blocks
+
+### 3 Feb 2024
+* *5 hours* Implementing spatial spectral encoder 
+
+
+## Week 21
+### 6 Feb 2024
+* *7 hours* Implementing spatial spectral encoder blocks
+* *2 hours* Adapting DINOv2 to spatial spectral encoder
+
+### 9 Feb 2024
+* *5 hours* Adapting DINOv2 to spatial spectral encoder - masking generator, and loss
+
+## Week 22
+### 13 Feb 2024
+* *2 hours* Experimenting with different decoders
+* *3 hours* Experimenting with different decoders
+* *2 hours* Experimenting with different decoders
+
+### 15 Feb 2024
+* *2 hours* Experimenting with different decoders
+
+### 16 Feb 2024
+* *2 hours* Experimenting with different decoders
+
+## Week 23
+### 20 Feb 2024
+
+* *2 hours* Setting up baseline segmentor pipeline
+
+### 23 Feb 2024
+* *3 hours* Setting up baseline segmentor pipeline
+
+## Week 24
+
+### 27 Feb 2024
+* *3 hours* Writing dissertation
+### 30 Feb 2024
+
+* *2 hours* Evaluating baseline segmentor
+
+## Week 25
+
+### 5 March 2024
+* *3 hours* Writing dissertation
+
+
+### 9 March 2024
+
+* *10 hours* Writing dissertation
+
+## Week 26
+
+### 11 March 2024
+
+* *2 hours* Writing dissertation
+* *4 hours* Writing dissertation
+
+### 16 March 2024
+
+* *6 hours* Writing dissertation
+* *4 hours* Collecting and preparing data for dissertation
+
+## Week 27
+
+### 18 March 2024
+
+* *4 hours* Writing dissertation
+* *3 hours* Writing dissertation
+
+### 19 March 2024
+
+* *4 hours* Preparing data for dissertation
+* *2 hours* Writing dissertation
+
+### 20 March 2024
+
+* *2 hours* Writing dissertation
+
+### 21 March 2024
+
+* *2 hours* Preparing video presentation
+* *3 hours* Recording video presentation
+* *4 hours* Collecting remaing material for disseration submission
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
